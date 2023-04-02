@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import util.JsonUtils;
+import util.WriteCSV;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -17,19 +18,25 @@ import static util.Constants.*;
 
 public class RetrieveRelease {
 
+    private RetrieveRelease() {
+    }
+
     /**
      * Da Jira prende tutte le release del progetto
      *
      * @return : lista delle release
-     * @throws IOException:
-     * @throws JSONException:
      */
-    public static List<Release> retrieveRelease() throws IOException, JSONException {
+    public static List<Release> retrieveRelease() {
         ArrayList<Release> releases = new ArrayList<>();
         //Fills the arraylist with releases dates and orders them
         //Ignores releases with missing dates
         String url = "https://issues.apache.org/jira/rest/api/2/project/" + MilestoneOne.PROJ_NAME.toUpperCase(Locale.ROOT);
-        JSONObject json = JsonUtils.readJsonFromUrl(url);
+        JSONObject json;
+        try {
+            json = JsonUtils.readJsonFromUrl(url);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         JSONArray versions = json.getJSONArray(VERSIONS);
 
         for (int i = 0; i < versions.length(); i++) {
@@ -49,6 +56,7 @@ public class RetrieveRelease {
         releases.sort(Comparator.comparing(Release::getDateCreation));
         setNumRelease(releases);
 
+        WriteCSV.writeRelease(releases);
         return releases;
     }
 
@@ -57,7 +65,7 @@ public class RetrieveRelease {
      *
      * @param listRelease: lista delle release del progetto
      */
-    public static void setNumRelease(List<Release> listRelease) {
+    private static void setNumRelease(List<Release> listRelease) {
         for (int i = 0; i < listRelease.size(); i++) {
             Integer index = i + 1;
             listRelease.get(i).setNumVersion(index);

@@ -1,8 +1,11 @@
 package milestone_one;
 
 import entity.Release;
+import entity.Ticket;
 import entity.TicketJira;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import util.LogFile;
+import util.WriteCSV;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -22,16 +25,16 @@ public class MilestoneOne {
 
         try {
             List<Release> releases = RetrieveRelease.retrieveRelease();
-            List<TicketJira> giraInfo = RetrieveTicketsID.retrieveTicketJira();
+            List<TicketJira> ticketJiras = RetrieveTicketsJira.retrieveTicketJira();
+            List<Ticket> ticket = RetrieveTicketGit.retrieveTicketGit(ticketJiras);
+
+            Proportion.proportionMethod(releases, ticketJiras, ticket);
 
             LogFile.infoLog("*** Release *** \n" + "Release-size: " + releases.size() + "\n");
-            System.out.println(releases);
-            System.out.println(giraInfo);
 
-        } catch (IOException e) {
+            WriteCSV.writeTicketJira(ticketJiras);
+        } catch (IOException | ParseException | GitAPIException e) {
             LogFile.errorLog("Exception MilestoneOne");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
         }
 
     }
