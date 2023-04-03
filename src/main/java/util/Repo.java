@@ -30,10 +30,11 @@ public class Repo {
     public static String returnRepo(String path) {
         //Prende il repository path definito all'interno del path_repository.properties
         Properties properties = new Properties();
-        try(FileInputStream fileInput = new FileInputStream(PATH_REPOSITORY)) {
+        try (FileInputStream fileInput = new FileInputStream(PATH_REPOSITORY)) {
             properties.load(fileInput);
-        } catch(Exception e) {
-            LogFile.errorLog("Errore nel file path repository.");}
+        } catch (Exception e) {
+            LogFile.errorLog("Errore nel file path repository.");
+        }
         return properties.getProperty(path);
     }
 
@@ -41,8 +42,8 @@ public class Repo {
      * Return repository
      *
      * @param path:
-     * @return:
      * @throws IOException :
+     * @return:
      */
     public static Repository repository(String path) throws IOException {
         String repoPath = returnRepo(path);
@@ -51,7 +52,8 @@ public class Repo {
         return repositoryBuilder.setGitDir(new File(repoPath)).setMustExist(true).build();
     }
 
-    /**Metodo che ritorna il Path per il treeWalk
+    /**
+     * Metodo che ritorna il Path per il treeWalk
      *
      * @return:
      */
@@ -63,9 +65,9 @@ public class Repo {
     /**
      * Metodo che ritorna l'iterazione di git
      *
-     * @return:
      * @throws IOException:
      * @throws GitAPIException:
+     * @return:
      */
     public static Iterator<RevCommit> iteratorGit(String path) throws IOException, GitAPIException {
         Git git = new Git(repository(path));

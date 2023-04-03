@@ -2,7 +2,6 @@ package milestone_one;
 
 import entity.Release;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import util.JsonUtils;
 import util.WriteCSV;
@@ -25,18 +24,16 @@ public class RetrieveRelease {
      * Da Jira prende tutte le release del progetto
      *
      * @return : lista delle release
+     * @throws IOException:
      */
-    public static List<Release> retrieveRelease() {
+    public static List<Release> retrieveRelease() throws IOException {
         ArrayList<Release> releases = new ArrayList<>();
         //Fills the arraylist with releases dates and orders them
         //Ignores releases with missing dates
         String url = "https://issues.apache.org/jira/rest/api/2/project/" + MilestoneOne.PROJ_NAME.toUpperCase(Locale.ROOT);
         JSONObject json;
-        try {
-            json = JsonUtils.readJsonFromUrl(url);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+        json = JsonUtils.readJsonFromUrl(url);
         JSONArray versions = json.getJSONArray(VERSIONS);
 
         for (int i = 0; i < versions.length(); i++) {

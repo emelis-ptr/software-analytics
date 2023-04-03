@@ -1,5 +1,6 @@
 package util;
 
+import entity.Dataset;
 import entity.Release;
 import entity.TicketJira;
 import milestone_one.MilestoneOne;
@@ -11,6 +12,8 @@ import static util.Constants.PATH_RESULTS;
 
 public class WriteCSV {
 
+    private WriteCSV() {
+    }
 
     /**
      * Scrive in un file csv tutte le release
@@ -74,6 +77,61 @@ public class WriteCSV {
             }
         } catch (Exception e) {
             LogFile.errorLog("Error in csv writer TicketJira");
+        }
+    }
+
+    /**
+     * Scrive in un file csv tutte le metriche del dataset
+     *
+     * @param datasets: metriche del dataset
+     */
+    public static void writeDataset(List<Dataset> datasets) {
+        String outname = PATH_RESULTS + MilestoneOne.PROJ_NAME + "-Dataset.csv";
+
+        try (FileWriter fileWriter = new FileWriter(outname)) {
+            fileWriter.append("Release, FileName, sizeLoc, locTouched, numR, numFix, numAuth, locAdded, avgLocAdded, maxLocAdded, churn, maxChurn, avgChurn, age, weightedAge, Bugginess");
+            fileWriter.append("\n");
+
+            for (Dataset metric : datasets) {
+                fileWriter.append(metric.getRelease().getNumVersion().toString());
+                fileWriter.append(",");
+                fileWriter.append(metric.getNameFile());
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getSizeLoc()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getLocTouched()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getNumR()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getNumFix()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getNumAuth()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getLocAdded()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getAvgLocAdded()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getMaxLocAdded()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getChurn()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getMaxChurn()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getAvgChurn()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getAge()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(metric.getWeightedAge()));
+                fileWriter.append(",");
+                if (metric.isBuggy()) {
+                    fileWriter.append("yes");
+                } else {
+                    fileWriter.append("no");
+                }
+                fileWriter.append("\n");
+            }
+        } catch (Exception e) {
+            LogFile.errorLog("Error in csv writer Dataset");
         }
     }
 

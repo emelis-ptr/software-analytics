@@ -1,5 +1,6 @@
 package milestone_one;
 
+import entity.Dataset;
 import entity.Release;
 import entity.Ticket;
 import entity.TicketJira;
@@ -26,17 +27,22 @@ public class MilestoneOne {
         try {
             List<Release> releases = RetrieveRelease.retrieveRelease();
             List<TicketJira> ticketJiras = RetrieveTicketsJira.retrieveTicketJira();
-            List<Ticket> ticket = RetrieveTicketGit.retrieveTicketGit(ticketJiras);
+            List<Ticket> tickets = RetrieveTicketGit.retrieveTicketGit(ticketJiras);
 
-            Proportion.proportionMethod(releases, ticketJiras, ticket);
+            Proportion.proportionMethod(releases, ticketJiras, tickets);
 
-            LogFile.infoLog("*** Release *** \n" + "Release-size: " + releases.size() + "\n");
+            List<Dataset> datasets = RetrieveFile.retrieveFiles(releases, tickets);
+            System.out.println(datasets);
+
+            LogFile.infoLog("*** Release *** \n" + "Numero di release: " + releases.size() + "\n");
+            LogFile.infoLog("*** Ticket *** \n" + "Numero di ticket: " + tickets.size() + "\n");
+            LogFile.infoLog("*** Dataset *** \n" + "Dimensione del dataset: " + datasets.size() + "\n");
 
             WriteCSV.writeTicketJira(ticketJiras);
-        } catch (IOException | ParseException | GitAPIException e) {
+            WriteCSV.writeDataset(datasets);
+        } catch (IOException | ParseException |
+                 GitAPIException e) {
             LogFile.errorLog("Exception MilestoneOne");
         }
-
     }
-
 }

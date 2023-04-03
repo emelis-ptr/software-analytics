@@ -5,24 +5,27 @@ import util.Utils;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Ticket {
-    private TicketJira idTicket;
+    private TicketJira ticket;
     private List<RevCommit> commitList;
+    private RevCommit lastCommit;
     private LocalDate lastDateCommit;
     private int numCommit;
 
-    public Ticket(TicketJira idTicket) {
-        this.idTicket = idTicket;
+    public Ticket(TicketJira ticket) {
+        this.ticket = ticket;
     }
 
-    public TicketJira getIdTicket() {
-        return idTicket;
+    public TicketJira getTicket() {
+        return ticket;
     }
 
-    public void setIdTicket(TicketJira idTicket) {
-        this.idTicket = idTicket;
+    public void setTicket(TicketJira ticket) {
+        this.ticket = ticket;
     }
 
     public List<RevCommit> getCommitList() {
@@ -33,8 +36,22 @@ public class Ticket {
         this.commitList = commitList;
     }
 
-    public LocalDate getLastDateCommit() {
+    public RevCommit getLastCommit() {
         addLastCommit();
+        return lastCommit;
+    }
+
+    public void setLastCommit(RevCommit lastCommit) {
+        this.lastCommit = lastCommit;
+    }
+
+    private void addLastCommit() {
+        Map.Entry<RevCommit, Date> latestEntry = lastCommitDate();
+        setLastCommit(latestEntry.getKey());
+    }
+
+    public LocalDate getLastDateCommit() {
+        addLastDateCommit();
         return lastDateCommit;
     }
 
@@ -42,9 +59,29 @@ public class Ticket {
         this.lastDateCommit = lastDateCommit;
     }
 
-    private void addLastCommit() {
-        Date lastCommitHash = this.getCommitList().get(0).getAuthorIdent().getWhen();
-        setLastDateCommit(Utils.convertToLocalDate(lastCommitHash));
+    private void addLastDateCommit() {
+        Map.Entry<RevCommit, Date> latestEntry = lastCommitDate();
+        setLastDateCommit(Utils.convertToLocalDate(latestEntry.getValue()));
+    }
+
+    private Map<RevCommit, Date> commitDate() {
+        Map<RevCommit, Date> commitDate = new HashMap<>();
+        for (RevCommit rev : this.getCommitList()) {
+            commitDate.put(rev, rev.getCommitterIdent().getWhen());
+        }
+        return commitDate;
+    }
+
+    private Map.Entry<RevCommit, Date> lastCommitDate() {
+        Map<RevCommit, Date> commitDate = commitDate();
+
+        Map.Entry<RevCommit, Date> latestEntry = null;
+        for (Map.Entry<RevCommit, Date> entry : commitDate.entrySet()) {
+            if (latestEntry == null || entry.getValue().after(latestEntry.getValue())) {
+                latestEntry = entry;
+            }
+        }
+        return latestEntry;
     }
 
     public int getNumCommit() {
@@ -64,8 +101,9 @@ public class Ticket {
     @Override
     public String toString() {
         return "\n" + "Ticket{" +
-                "idTicket=" + idTicket +
+                "idTicket=" + ticket +
                 ", commitList=" + commitList +
+                ", lastCommit=" + lastCommit +
                 ", lastDateCommit=" + lastDateCommit +
                 ", numCommit=" + numCommit +
                 '}' + "\n";

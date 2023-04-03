@@ -1,8 +1,8 @@
 package entity;
 
-public class Dataset {
+public class Dataset implements Comparable<Dataset> {
     private Release release;
-    private String file;
+    private String nameFile;
     private int sizeLoc;
     private int locTouched;
     private int numR;
@@ -21,9 +21,9 @@ public class Dataset {
     private double weightedAge;
     private boolean isBuggy;
 
-    public Dataset(Release release, String file) {
+    public Dataset(Release release, String nameFile) {
         this.release = release;
-        this.file = file;
+        this.nameFile = nameFile;
     }
 
     public Dataset() {
@@ -37,12 +37,12 @@ public class Dataset {
         this.release = release;
     }
 
-    public String getFile() {
-        return file;
+    public String getNameFile() {
+        return nameFile;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setNameFile(String nameFile) {
+        this.nameFile = nameFile;
     }
 
     public int getSizeLoc() {
@@ -193,7 +193,7 @@ public class Dataset {
     public String toString() {
         return " ** Metrics ** {" +
                 "entity.Release=" + release.getNumVersion() +
-                ", fileName= " + file +
+                ", fileName= " + nameFile +
                 ", sizeFile=" + sizeLoc +
                 ", locTouched=" + locTouched +
                 ", numR=" + numR +
@@ -212,5 +212,10 @@ public class Dataset {
                 ", weightedAge=" + weightedAge +
                 ", isBuggy=" + isBuggy +
                 '}' + "\n";
+    }
+
+    @Override
+    public int compareTo(Dataset dataset) {
+        return this.getRelease().getNumVersion().compareTo(dataset.getRelease().getNumVersion());
     }
 }
