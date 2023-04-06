@@ -218,4 +218,17 @@ public class Dataset implements Comparable<Dataset> {
     public int compareTo(Dataset dataset) {
         return this.getRelease().getNumVersion().compareTo(dataset.getRelease().getNumVersion());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        // nessuna istanza dovrebbe essere uguale a null, quindi andiamo a verificarlo
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Dataset dataset = (Dataset) obj;
+        return this.getRelease().getNumVersion().equals(dataset.release.getNumVersion());
+    }
 }

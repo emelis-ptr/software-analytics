@@ -4,7 +4,6 @@ import entity.Dataset;
 import entity.Release;
 import entity.Ticket;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -30,11 +29,10 @@ public class RetrieveFile {
      * @param releases: lista delle release
      * @param tickets:  lista dei ticket
      * @throws JGitInternalException:
-     * @throws GitAPIException:
      * @throws IOException:
      * @return: lista dei file
      */
-    public static List<Dataset> retrieveFiles(List<Release> releases, List<Ticket> tickets) throws JGitInternalException, GitAPIException, IOException {
+    public static List<Dataset> retrieveFiles(List<Release> releases, List<Ticket> tickets) throws IOException {
         Map<Integer, List<RevCommit>> releaseCommits = ReleaseCommits.findReleaseCommits(releases, tickets);
         List<Dataset> datasets = new ArrayList<>();
         Dataset dataset;
@@ -43,17 +41,17 @@ public class RetrieveFile {
         Git git = Git.open(repoPath.toFile());
         TreeWalk treeWalk = new TreeWalk(git.getRepository());
 
-        RevCommit lastCommit = null;
+        List<RevCommit> lastCommit = new ArrayList<>();
         for (Map.Entry<Integer, List<RevCommit>> entry : releaseCommits.entrySet()) {
 
             RevCommit commit;
             // assegna l'ultimo commit della release se la lista dei commit non è vuota
             // altrimenti assegna il commit della release precedente
-            if (entry.getValue().size() != 0) {
+            if (!entry.getValue().isEmpty()) {
                 commit = entry.getValue().get(0);
-                lastCommit = commit;
+                lastCommit.add(commit);
             } else {
-                commit = lastCommit;
+                commit = lastCommit.get(lastCommit.size() - 1);
             }
 
             ObjectId treeId = commit.getTree();
@@ -73,6 +71,7 @@ public class RetrieveFile {
             }
         }
 
+        git.close();
         // ordina il dataset in base al numero della release
         Collections.sort(datasets);
         return datasets;

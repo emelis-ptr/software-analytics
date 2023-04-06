@@ -29,28 +29,11 @@ public class ReleaseCommits {
         // -1 perchè nella map l'indice della release parte da 0
         int halfRelease = (releases.size() / 2) - 1;
 
-        for (int i = 0; i < releases.size(); i++) {
-            commitsMap.put(i, new ArrayList<>());
-        }
+        initCommitsToRelease(releases, commitsMap);
 
-        //per ogni ultimo commit del ticket determiniamo la release di appartenenza
         for (Ticket ticket : tickets) {
             for (int i = 0; i < releases.size(); i++) {
-                LocalDate dateCurrentRelease = releases.get(i).getDateCreation();
-                //Si trova alla prima release
-                if (i == 0) {
-                    if (ticket.getLastDateCommit().isEqual(dateCurrentRelease) || ticket.getLastDateCommit().isBefore(dateCurrentRelease)) {
-                        commitsMap.get(i).add(ticket.getLastCommit());
-                    }
-                } else {
-                    LocalDate datePreviousRelease = releases.get(i - 1).getDateCreation();
-                    //Se la data del commit si trova dopo la release precedente e uguale/prima delle release corrente
-                    //allora si inserire nella data corrente
-                    if (ticket.getLastDateCommit().isAfter(datePreviousRelease)
-                            && (ticket.getLastDateCommit().isEqual(dateCurrentRelease) || ticket.getLastDateCommit().isBefore(dateCurrentRelease))) {
-                        commitsMap.get(i).add(ticket.getLastCommit());
-                    }
-                }
+                mapCommitsToRelease(commitsMap, releases, ticket, i);
             }
         }
 
@@ -60,5 +43,44 @@ public class ReleaseCommits {
         commitsMap.entrySet().removeIf(entry -> entry.getKey() > halfRelease);
         return commitsMap;
     }
+
+    /**
+     * Inizializza la map assegnado come chiave il numero della release
+     *
+     * @param releases:   lista delle release
+     * @param commitsMap: map che ha come chiave il numero della release e come valore una lista di commit
+     */
+    private static void initCommitsToRelease(List<Release> releases, Map<Integer, List<RevCommit>> commitsMap) {
+        for (int i = 0; i < releases.size(); i++) {
+            commitsMap.put(i, new ArrayList<>());
+        }
+    }
+
+    /**
+     * Per ogni ultimo commit del ticket determiniamo la release di appartenenza
+     *
+     * @param commitsMap:   map che ha come chiave il numero della release e come valore una lista di commit
+     * @param releases:     lista della release
+     * @param ticket:       ticket corrente
+     * @param indexRelease: numero della release a partire dall'indice 0
+     */
+    private static void mapCommitsToRelease(Map<Integer, List<RevCommit>> commitsMap, List<Release> releases, Ticket ticket, int indexRelease) {
+        LocalDate dateCurrentRelease = releases.get(indexRelease).getDateCreation();
+        //Si trova alla prima release
+        if (indexRelease == 0) {
+            if (ticket.getLastDateCommit().isEqual(dateCurrentRelease) || ticket.getLastDateCommit().isBefore(dateCurrentRelease)) {
+                commitsMap.get(indexRelease).add(ticket.getLastCommit());
+            }
+        } else {
+            LocalDate datePreviousRelease = releases.get(indexRelease - 1).getDateCreation();
+            //Se la data del commit si trova dopo la release precedente e uguale/prima delle release corrente
+            //allora si inserire nella data corrente
+            if (ticket.getLastDateCommit().isAfter(datePreviousRelease)
+                    && (ticket.getLastDateCommit().isEqual(dateCurrentRelease) || ticket.getLastDateCommit().isBefore(dateCurrentRelease))) {
+                commitsMap.get(indexRelease).add(ticket.getLastCommit());
+            }
+        }
+    }
+
 
 }

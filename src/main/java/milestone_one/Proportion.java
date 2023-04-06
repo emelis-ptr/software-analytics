@@ -56,10 +56,10 @@ public class Proportion {
     private static void setFV(Ticket ticket, List<Release> releases) {
         for (Release release : releases) {
             if (ticket.getLastDateCommit().equals(release.getDateCreation()) || release.getDateCreation().isAfter(ticket.getLastDateCommit())) {
-                ticket.getTicket().setFixedVersion(release);
+                ticket.getTicketJira().setFixedVersion(release);
                 break;
             } else {
-                ticket.getTicket().setFixedVersion(releases.get(releases.size() - 1));
+                ticket.getTicketJira().setFixedVersion(releases.get(releases.size() - 1));
             }
         }
     }
