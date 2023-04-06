@@ -124,9 +124,9 @@ public class WriteCSV {
                 fileWriter.append(String.valueOf(metric.getWeightedAge()));
                 fileWriter.append(",");
                 if (metric.isBuggy()) {
-                    fileWriter.append("yes");
+                    fileWriter.append("true");
                 } else {
-                    fileWriter.append("no");
+                    fileWriter.append("false");
                 }
                 fileWriter.append("\n");
             }

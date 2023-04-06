@@ -231,4 +231,10 @@ public class Dataset implements Comparable<Dataset> {
         Dataset dataset = (Dataset) obj;
         return this.getRelease().getNumVersion().equals(dataset.release.getNumVersion());
     }
+
+    @Override
+    public int hashCode() {
+        return this.getRelease().hashCode();
+    }
+
 }
