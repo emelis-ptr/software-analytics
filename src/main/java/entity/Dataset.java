@@ -1,12 +1,16 @@
 package entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Dataset implements Comparable<Dataset> {
     private Release release;
-    private String nameFile;
+    private File file;
     private int sizeLoc;
     private int locTouched;
     private int numR;
     private int numFix;
+    private List<String> authors;
     private int numAuth;
     private int locAdded;
     private int maxLocAdded;
@@ -14,22 +18,20 @@ public class Dataset implements Comparable<Dataset> {
     private int churn;
     private int maxChurn;
     private float avgChurn;
-    private int chgSetSize;
-    private int maxChgSet;
-    private float avgChgSet;
     private int age;
     private double weightedAge;
     private boolean isBuggy;
 
-    public Dataset(Release release, String nameFile) {
-        this.release = release;
-        this.nameFile = nameFile;
+    public Dataset(File file) {
+        this.file = file;
+        this.authors = new ArrayList<>();
     }
 
     public Dataset() {
     }
 
     public Release getRelease() {
+        this.setRelease(this.getFile().getRelease());
         return release;
     }
 
@@ -37,15 +39,16 @@ public class Dataset implements Comparable<Dataset> {
         this.release = release;
     }
 
-    public String getNameFile() {
-        return nameFile;
+    public File getFile() {
+        return file;
     }
 
-    public void setNameFile(String nameFile) {
-        this.nameFile = nameFile;
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public int getSizeLoc() {
+        addSizeLOC();
         return sizeLoc;
     }
 
@@ -77,7 +80,16 @@ public class Dataset implements Comparable<Dataset> {
         this.numFix = numFix;
     }
 
+    public List<String> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<String> authors) {
+        this.authors = authors;
+    }
+
     public int getNumAuth() {
+        addNumAuthors();
         return numAuth;
     }
 
@@ -133,31 +145,8 @@ public class Dataset implements Comparable<Dataset> {
         this.avgChurn = avgChurn;
     }
 
-    public int getChgSetSize() {
-        return chgSetSize;
-    }
-
-    public void setChgSetSize(int chgSetSize) {
-        this.chgSetSize = chgSetSize;
-    }
-
-    public int getMaxChgSet() {
-        return maxChgSet;
-    }
-
-    public void setMaxChgSet(int maxChgSet) {
-        this.maxChgSet = maxChgSet;
-    }
-
-    public float getAvgChgSet() {
-        return avgChgSet;
-    }
-
-    public void setAvgChgSet(float avgChgSet) {
-        this.avgChgSet = avgChgSet;
-    }
-
     public int getAge() {
+        this.setAge(this.getFile().getAge());
         return age;
     }
 
@@ -189,11 +178,32 @@ public class Dataset implements Comparable<Dataset> {
         }
     }
 
+    public void addAuthors(String authors) {
+        if (!this.authors.contains(authors)) {
+            this.authors.add(authors);
+        }
+    }
+
+    private void addNumAuthors() {
+        if (!this.authors.isEmpty()) {
+            this.setNumAuth(this.authors.size());
+        } else {
+            // aggiungiamo uno perchè si assume che il file sia stato comunque
+            // creato e committato da qualcuno
+            this.setNumAuth(1);
+        }
+    }
+
+    private void addSizeLOC() {
+        this.setSizeLoc(this.getFile().getSizeLOC());
+    }
+
+
     @Override
     public String toString() {
         return " ** Metrics ** {" +
                 "entity.Release=" + release.getNumVersion() +
-                ", fileName= " + nameFile +
+                ", fileName= " + file.getNameFile() +
                 ", sizeFile=" + sizeLoc +
                 ", locTouched=" + locTouched +
                 ", numR=" + numR +
@@ -205,9 +215,6 @@ public class Dataset implements Comparable<Dataset> {
                 ", churn=" + churn +
                 ", maxChurn=" + maxChurn +
                 ", avgChurn=" + avgChurn +
-                ", chgSetSize=" + chgSetSize +
-                ", maxChgSet=" + maxChgSet +
-                ", avgChgset=" + avgChgSet +
                 ", age=" + age +
                 ", weightedAge=" + weightedAge +
                 ", isBuggy=" + isBuggy +

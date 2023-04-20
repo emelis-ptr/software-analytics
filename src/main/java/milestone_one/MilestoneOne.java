@@ -1,11 +1,8 @@
 package milestone_one;
 
-import entity.Dataset;
-import entity.Release;
-import entity.Ticket;
-import entity.TicketJira;
+import entity.*;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import util.LogFile;
+import util.Logger;
 import util.WriteCSV;
 
 import java.io.IOException;
@@ -18,31 +15,45 @@ public class MilestoneOne {
     protected static final String[] PATHS = {"PATH_BOOKKEEPER", "PATH_SYNCOPE"};
 
     //bookkeeper = 0; syncope = 1
-    public static final String PROJ_NAME = PROJS_NAME[0];
-    public static final String PATH_PROJ = PATHS[0];
+    public static final String PROJ_NAME = PROJS_NAME[1];
+    public static final String PATH_PROJ = PATHS[1];
 
     public static void main(String[] args) {
-        LogFile.setupLogger();
+        Logger.setupLogger();
 
         try {
+            Logger.infoLog(" --> Determiniamo le release");
             List<Release> releases = RetrieveRelease.retrieveRelease();
+            // consideriamo solo metà delle release
+            int halfRelease = (releases.size() / 2);
+
+            Logger.infoLog(" --> Determiniamo i ticket presenti su Jira");
             List<TicketJira> ticketJiras = RetrieveTicketsJira.retrieveTicketJira();
-            List<Ticket> tickets = RetrieveTicketGit.retrieveTicketGit(ticketJiras);
 
-            Proportion.proportionMethod(releases, ticketJiras, tickets);
+            Logger.infoLog(" --> Determiniamo i commit del progetto");
+            List<Commit> commits = RetrieveTicketGit.getCommits(ticketJiras, releases);
 
-            List<Dataset> datasets = RetrieveFile.retrieveFiles(releases, tickets);
-            System.out.println(datasets);
+            Logger.infoLog(" --> Determiniamo i ticket che hanno nel commit del progetto l'id");
+            List<Ticket> tickets = RetrieveTicketGit.retrieveTicketGit(commits);
 
-            LogFile.infoLog("*** Release *** \n" + "Numero di release: " + releases.size() + "\n");
-            LogFile.infoLog("*** Ticket *** \n" + "Numero di ticket: " + tickets.size() + "\n");
-            LogFile.infoLog("*** Dataset *** \n" + "Dimensione del dataset: " + datasets.size() + "\n");
+            Logger.infoLog(" --> Determiniamo IV attraverso il metodo proportion");
+            Proportion.proportion(ticketJiras, tickets, releases);
 
-            WriteCSV.writeTicketJira(ticketJiras);
+            Logger.infoLog(" --> Costruiamo il dataset");
+            List<Dataset> datasets = BuildDataset.buildDataset(commits, halfRelease, releases);
+
+            Logger.infoLog("*** Release *** \n" + "Numero di release: " + releases.size() + "\n");
+            Logger.infoLog("*** Ticket *** \n" + "Numero di ticket: " + tickets.size() + "\n");
+            Logger.infoLog("*** Dataset *** \n" + "Dimensione del dataset: " + datasets.size() + "\n");
+
+            Logger.infoLog(" --> Stampiamo su un file csv");
             WriteCSV.writeDataset(datasets);
-        } catch (IOException | ParseException |
-                 GitAPIException e) {
-            LogFile.errorLog("Exception MilestoneOne");
+            WriteCSV.writeCommit(commits);
+            WriteCSV.writeTicketJira(ticketJiras);
+            WriteCSV.writeTicket(tickets);
+        } catch (IOException | ParseException | GitAPIException e) {
+            Logger.errorLog("Exception MilestoneOne");
         }
     }
+
 }

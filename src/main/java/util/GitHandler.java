@@ -1,24 +1,25 @@
 package util;
 
+import milestone_one.MilestoneOne;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.treewalk.TreeWalk;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.Properties;
 
 import static util.Constants.PATH_REPOSITORY;
 
-public class Repo {
+public class GitHandler {
 
-    private Repo() {
+    private GitHandler() {
     }
 
     /**
@@ -33,7 +34,7 @@ public class Repo {
         try (FileInputStream fileInput = new FileInputStream(PATH_REPOSITORY)) {
             properties.load(fileInput);
         } catch (Exception e) {
-            LogFile.errorLog("Errore nel file path repository.");
+            Logger.errorLog("Errore nel file path repository.");
         }
         return properties.getProperty(path);
     }
@@ -63,15 +64,41 @@ public class Repo {
     }
 
     /**
-     * Metodo che ritorna l'iterazione di git
+     * Ritorna l'iterazione di git
      *
      * @throws IOException:
      * @throws GitAPIException:
      * @return:
      */
-    public static Iterator<RevCommit> iteratorGit(String path) throws IOException, GitAPIException {
-        Git git = new Git(repository(path));
-        Iterable<RevCommit> log = git.log().all().call();
-        return log.iterator();
+    public static Iterable<RevCommit> logsCommits() throws IOException, GitAPIException {
+        Repository repository = GitHandler.repository(MilestoneOne.PATH_PROJ);
+        Git git = new Git(repository);
+        return git.log().call();
+    }
+
+    /**
+     * Git
+     *
+     * @throws IOException:
+     * @return: git
+     */
+    public static Git git() throws IOException {
+        Path repoPath = GitHandler.returnPath(MilestoneOne.PATH_PROJ);
+        return Git.open(repoPath.toFile());
+    }
+
+    /**
+     * Tree walk
+     *
+     * @return: tree walk
+     */
+    public static TreeWalk treeWalk() {
+        TreeWalk treeWalk = null;
+        try (Git git = git()) {
+            treeWalk = new TreeWalk(git.getRepository());
+        } catch (IOException e) {
+            Logger.errorLog("Errore nel recupero file");
+        }
+        return treeWalk;
     }
 }

@@ -26,13 +26,14 @@ public class RetrieveTicketsJira {
     /**
      * Recupera da Jira i tickets e FV, OV, e AV se presenti
      *
-     * @return :
+     * @return : lista dei ticket presenti su Jira
      * @throws IOException:
      * @throws ParseException:
      */
     public static List<TicketJira> retrieveTicketJira() throws IOException, ParseException {
         List<Release> releases = RetrieveRelease.retrieveRelease();
         ArrayList<TicketJira> ticketJiras = new ArrayList<>();
+        TicketJira ticketJira;
 
         int j;
         int i = 0;
@@ -41,10 +42,7 @@ public class RetrieveTicketsJira {
         do {
             //Only gets a max of 1000 at a time, so must do this multiple times if bugs >1000
             j = i + 1000;
-            String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22"
-                    + MilestoneOne.PROJ_NAME + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR"
-                    + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt="
-                    + i + "&maxResults=" + j;
+            String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22" + MilestoneOne.PROJ_NAME + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR" + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt=" + i + "&maxResults=" + j;
 
             JSONObject json = JsonUtils.readJsonFromUrl(url);
 
@@ -72,12 +70,14 @@ public class RetrieveTicketsJira {
                     nameVersion = affectedVersions.getJSONObject(k).get(ID_VERSION).toString();
                     listAV.add(nameVersion);
                 }
-                ticketJiras.add(new TicketJira(idTicket, createdDate, resolutionDate));
+                ticketJira = new TicketJira(idTicket, createdDate, resolutionDate);
 
                 // inserisco le versioni di ogni ticket
-                setOV(ticketJiras.get(ticketJiras.size() - 1), releases);
-                setFV(ticketJiras.get(ticketJiras.size() - 1), releases);
-                setAVandIV(ticketJiras.get(ticketJiras.size() - 1), listAV, releases);
+                setOV(ticketJira, releases);
+                setAV(ticketJira, listAV, releases);
+                setIV(ticketJira);
+
+                ticketJiras.add(ticketJira);
             }
         } while (i < total);
 
@@ -109,31 +109,14 @@ public class RetrieveTicketsJira {
      * @param ticketJira: ticket presente su Jira
      * @param releases: lista delle release del progetto
      **/
-    private static void setFV(TicketJira ticketJira, List<Release> releases) {
+    public static void setFV(TicketJira ticketJira, List<Release> releases) {
         for (Release release : releases) {
             if (ticketJira.getResolutionDate().equals(release.getDateCreation()) || release.getDateCreation().isAfter(ticketJira.getResolutionDate())) {
                 ticketJira.setFixedVersion(release);
                 break;
+            } else {
+                ticketJira.setFixedVersion(releases.get(releases.size() - 1));
             }
-        }
-    }
-
-    /**
-     * Per ogni ticket se su Jira sono presenti più AV e inserisce la IV solo se presente AV
-     *
-     * @param ticketJira: ticket presente su Jira
-     * @param listAV:     lista delle affected version presenti su Jira
-     * @param releases:   lista delle release del progetto
-     */
-    private static void setAVandIV(TicketJira ticketJira, List<String> listAV, List<Release> releases) {
-        List<Release> releaseAV = new ArrayList<>();
-        if (!listAV.isEmpty()) {
-            //Inserisco le affected versions
-            for (String av : listAV) {
-                setAV(ticketJira, releases, av, releaseAV);
-            }
-            //Inserisco le Injected version solo se affected version è presente
-            ticketJira.setInjectedVersion(ticketJira.getAffectedVersion().get(0));
         }
     }
 
@@ -141,17 +124,34 @@ public class RetrieveTicketsJira {
      * Per ogni ticket se su Jira sono presenti più AV, li confronta con le realese e assegna
      * quella corrispondente
      *
-     * @param ticketJira:      ticket presente su Jira
-     * @param releases:        lista delle release
-     * @param affectedVersion: affected version
-     * @param releaseAV:       lista delle affected version
+     * @param ticketJira: ticket presente su Jira
+     * @param listAV:     lista delle affected version presenti su Jira
+     * @param releases:   lista delle release del progetto
      */
-    private static void setAV(TicketJira ticketJira, List<Release> releases, String affectedVersion, List<Release> releaseAV) {
-        for (Release release : releases) {
-            if (release.getReleaseID().equals(affectedVersion)) {
-                releaseAV.add(release);
-                ticketJira.setAffectedVersion(releaseAV);
+    private static void setAV(TicketJira ticketJira, List<String> listAV, List<Release> releases) {
+        List<Release> releaseAV = new ArrayList<>();
+        if (!listAV.isEmpty()) {
+            //Inserisco le affected versions
+            for (String affectedVersion : listAV) {
+                for (Release release : releases) {
+                    if (release.getReleaseID().equals(affectedVersion)) {
+                        releaseAV.add(release);
+                        ticketJira.setAffectedVersion(releaseAV);
+                    }
+                }
             }
+        }
+    }
+
+    /**
+     * Per ogni ticket se AV presente prende la prima e la inserisce nell'IV
+     *
+     * @param ticketJira: ticket presente su Jira
+     */
+    private static void setIV(TicketJira ticketJira) {
+        //Inserisco le Injected version solo se affected version è presente
+        if (ticketJira.getAffectedVersion() != null) {
+            ticketJira.setInjectedVersion(ticketJira.getAffectedVersion().get(0));
         }
     }
 

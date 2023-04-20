@@ -15,35 +15,25 @@ public class Proportion {
 
 
     /**
-     * Inserisce la FV e per ogni ticket calcolare la versione dell'IV tramite il
-     * metodo proportion incrementale
-     *
-     * @param releases:    lista delle release
-     * @param ticketJiras: lista dei ticket presenti su Jira
-     * @param tickets:     lista dei ticket che contengono nel commit id del ticket
-     */
-    public static void proportionMethod(List<Release> releases, List<TicketJira> ticketJiras, List<Ticket> tickets) {
-        for (Ticket ticket : tickets) {
-            setFV(ticket, releases);
-        }
-        proportion(ticketJiras, releases);
-    }
-
-    /**
      * Calcola la IV di un tickets. Se IV presente calculata p altrimenti
      * applica il metodo proportion
      *
      * @param ticketJiras: lista dei ticket presenti su Jira
      * @param releases:    lista delle release
      */
-    private static void proportion(List<TicketJira> ticketJiras, List<Release> releases) {
-        for (TicketJira version : ticketJiras) {
-            if (version.getInjectedVersion() != null) {
-                calculateP(releases, version);
-            } else {
-                calculateIV(releases, version);
+    public static void proportion(List<TicketJira> ticketJiras, List<Ticket> tickets, List<Release> releases) {
+        tickets.forEach(ticket -> setFV(ticket, releases));
+
+        ticketJiras.forEach(ticketJira -> {
+            if (ticketJira.getFixedVersion() == null) {
+                RetrieveTicketsJira.setFV(ticketJira, releases);
             }
-        }
+            if (ticketJira.getInjectedVersion() != null) {
+                calculateP(releases, ticketJira);
+            } else {
+                calculateIV(releases, ticketJira);
+            }
+        });
     }
 
     /***
@@ -58,12 +48,9 @@ public class Proportion {
             if (ticket.getLastDateCommit().equals(release.getDateCreation()) || release.getDateCreation().isAfter(ticket.getLastDateCommit())) {
                 ticket.getTicketJira().setFixedVersion(release);
                 break;
-            } else {
-                ticket.getTicketJira().setFixedVersion(releases.get(releases.size() - 1));
             }
         }
     }
-
 
     /**
      * Calcola proportion se il tickets ha IV

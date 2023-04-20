@@ -1,13 +1,16 @@
 package util;
 
-import java.util.logging.*;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
-public class LogFile {
-    private LogFile() {
+public class Logger {
+    private Logger() {
         throw new IllegalStateException("LoggerFile class");
     }
 
-    private static final Logger myLog = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    private static final java.util.logging.Logger myLog = java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
 
     public static void setupLogger() {
 
@@ -43,4 +46,5 @@ public class LogFile {
     public static void warnLog(String msg) {
         myLog.warning(msg);
     }
+
 }

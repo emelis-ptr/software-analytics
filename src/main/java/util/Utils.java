@@ -22,6 +22,10 @@ public class Utils {
                 .toLocalDate();
     }
 
+    public static Date convertToDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
     /**
      * Metodo che verifica se una stringa è contenuta in un testo
      *
