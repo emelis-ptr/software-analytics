@@ -84,8 +84,8 @@ public class File {
     public String toString() {
         return "File{" +
                 "nameFile='" + nameFile + '\'' +
-                ", release=" + release +
-                ", commit=" + commit +
+                ", release=" + release.getNumVersion() +
+                ", commit=" + commit.getRevCommit() +
                 ", oldNameFile='" + oldNameFile + '\'' +
                 ", fileCreation=" + fileCreation +
                 ", sizeLOC=" + sizeLOC +

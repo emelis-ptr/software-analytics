@@ -48,24 +48,18 @@ public class ReleaseCommits {
      * Crea una mappa <Release, List<Commit>>
      *
      * @param commits:     lista dei commit
-     * @param releases:    lista delle release
      * @param halfRelease: release da considerare, in questo caso la metà
-     * @return:
+     * @return: mappa dei commit associata alla release considerando solo la prima metà
      */
-    public static Map<Release, List<Commit>> mapReleaseCommits(List<Commit> commits, List<Release> releases, int halfRelease) {
+    public static Map<Release, List<Commit>> mapReleaseCommits(List<Commit> commits, int halfRelease) {
         Map<Release, List<Commit>> treeMap = new TreeMap<>(Comparator.comparing(Release::getNumVersion));
         treeMap.putAll(commits.stream()
                 .collect(Collectors.groupingBy(Commit::getRelease)));
 
         // ordina per ogni chiave la lista dei commit per data
         treeMap.forEach((key, value) -> value.sort(Comparator.comparing(d -> d.getRevCommit().getCommitterIdent().getWhen())));
-        // determina release mancante e aggiunge la lista dei commit della release precedente
-        releases.forEach(release -> {
-            if (!treeMap.containsKey(release)) {
-                treeMap.put(release, treeMap.get(releases.get(release.getNumVersion() - 2)));
-            }
-        });
 
+        // consideriamo sola la prima metà delle release
         treeMap.entrySet().removeIf(entry -> entry.getKey().getNumVersion() > halfRelease);
         return treeMap;
     }

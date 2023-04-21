@@ -116,11 +116,10 @@ public class Commit {
                 "shaId='" + shaId + '\'' +
                 ", commit=" + revCommit +
                 ", message='" + message + '\'' +
-                ", ticket='" + ticket + '\'' +
+                ", ticket='" + ticket.getIdTicket() + '\'' +
                 ", date=" + date +
                 ", author='" + author + '\'' +
                 ", version=" + release +
-                ", files=" + files +
                 ", numFiles=" + numFiles +
                 '}';
     }

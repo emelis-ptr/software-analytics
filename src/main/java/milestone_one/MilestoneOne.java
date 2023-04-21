@@ -15,8 +15,8 @@ public class MilestoneOne {
     protected static final String[] PATHS = {"PATH_BOOKKEEPER", "PATH_SYNCOPE"};
 
     //bookkeeper = 0; syncope = 1
-    public static final String PROJ_NAME = PROJS_NAME[1];
-    public static final String PATH_PROJ = PATHS[1];
+    public static final String PROJ_NAME = PROJS_NAME[0];
+    public static final String PATH_PROJ = PATHS[0];
 
     public static void main(String[] args) {
         Logger.setupLogger();
@@ -33,7 +33,7 @@ public class MilestoneOne {
             Logger.infoLog(" --> Determiniamo i commit del progetto");
             List<Commit> commits = RetrieveTicketGit.getCommits(ticketJiras, releases);
 
-            Logger.infoLog(" --> Determiniamo i ticket che hanno nel commit del progetto l'id");
+            Logger.infoLog(" --> Determiniamo i ticket che sono menzionati nel commit del progetto");
             List<Ticket> tickets = RetrieveTicketGit.retrieveTicketGit(commits);
 
             Logger.infoLog(" --> Determiniamo IV attraverso il metodo proportion");
