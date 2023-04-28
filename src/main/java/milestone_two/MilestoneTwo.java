@@ -23,14 +23,16 @@ public class MilestoneTwo {
 
     public static void main(String[] args) throws IOException {
         Logger.setupLogger();
-        Logger.infoLog(PROJ_NAME);
+        Logger.infoLog(" --> " + PROJ_NAME);
 
         int totalReleases = SplitDataset.findTotalReleasesNumber();
-        Logger.infoLog("Numero di release: " + totalReleases);
+        Logger.infoLog(" --> Numero di release: " + totalReleases);
 
         ArrayList<Result> results = new ArrayList<>();
+        Logger.infoLog(" --> Inizio valutazione metriche per la classificazione");
         evaluate(totalReleases, results);
 
+        Logger.infoLog(" --> Stampiamo su un file csv");
         WriteCSV.writeEvaluation(results);
     }
 
@@ -45,6 +47,8 @@ public class MilestoneTwo {
             for (String classifierName : CLASSIFIER) {
                 for (String resamplingMethodName : RESAMPLING) {
                     for (String featureSelectionName : FEATURE_SELECTION) {
+                        Logger.infoLog(" --> Consideriamo: " + classifierName + ", " + resamplingMethodName + ", "
+                                + featureSelectionName);
                         Result result = new Result(classifierName, featureSelectionName, resamplingMethodName);
                         result.setProjName(MilestoneTwo.PROJ_NAME);
                         run(result, i);

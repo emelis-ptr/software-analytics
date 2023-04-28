@@ -6,9 +6,13 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.lazy.IBk;
+import weka.classifiers.meta.FilteredClassifier;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.filters.Filter;
+import weka.filters.supervised.instance.Resample;
+import weka.filters.supervised.instance.SMOTE;
+import weka.filters.supervised.instance.SpreadSubsample;
 
 public class WalkForward {
 
@@ -93,8 +97,78 @@ public class WalkForward {
         if (filteredTraining == null) filteredTraining = trainingSet;
         if (filteredTesting == null) filteredTesting = testingSet;
 
-        result.addPercentage(filteredTraining, filteredTesting, indexRelease);
-        evaluate(result, classifier, filteredTraining, filteredTesting);
+        chooseBalancing(result, classifier, filteredTraining, filteredTesting, indexRelease);
+    }
+
+    /**
+     * Balancing
+     *
+     * @param result:             result
+     * @param classifier:   AbstractClassifier
+     * @param trainingSet:  training set
+     * @param testingSet:   testing set
+     * @param indexRelease: numero delle release
+     */
+    private static void chooseBalancing(Result result, AbstractClassifier classifier, Instances trainingSet, Instances testingSet, int indexRelease) {
+
+        FilteredClassifier filteredClassifier = null;
+
+        switch (result.getResamplingMethodName()) {
+
+            case "No resampling": //No resampling
+                break;
+
+            case "Oversampling": //Oversampling
+                Resample resample = Sampler.oversampling(trainingSet);
+
+                filteredClassifier = new FilteredClassifier();
+                filteredClassifier.setClassifier(classifier);
+                filteredClassifier.setFilter(resample);
+
+                try {
+                    trainingSet = Filter.useFilter(trainingSet, resample);
+                } catch (Exception e1) {
+                    Logger.errorLog("Errore nell'applicazione di Oversampling");
+                }
+
+                break;
+
+            case "Undersampling": //Undersampling
+
+                SpreadSubsample spreadSubsample = Sampler.undersampling(trainingSet);
+
+                filteredClassifier = new FilteredClassifier();
+                filteredClassifier.setClassifier(classifier);
+                filteredClassifier.setFilter(spreadSubsample);
+
+                try {
+                    trainingSet = Filter.useFilter(trainingSet, spreadSubsample);
+                } catch (Exception e1) {
+                    Logger.errorLog("Errore nell'applicazione di Undersampling");
+                }
+
+                break;
+
+            case "Smote": //SMOTE
+                SMOTE smote = Sampler.smote(trainingSet);
+
+                filteredClassifier = new FilteredClassifier();
+                filteredClassifier.setClassifier(classifier);
+                filteredClassifier.setFilter(smote);
+
+                try {
+                    trainingSet = Filter.useFilter(trainingSet, smote);
+                } catch (Exception e1) {
+                    Logger.errorLog("Errore nell'applicazione di SMOTE");
+                }
+                break;
+
+            default: //No sampling
+                break;
+        }
+
+        result.addPercentage(trainingSet, testingSet, indexRelease);
+        evaluate(result, classifier, filteredClassifier, trainingSet, testingSet);
     }
 
     /**
@@ -105,14 +179,19 @@ public class WalkForward {
      * @param trainingSet: training set
      * @param testingSet:  testing set
      */
-    public static void evaluate(Result result, AbstractClassifier classifier, Instances trainingSet, Instances testingSet) {
+    public static void evaluate(Result result, AbstractClassifier classifier, FilteredClassifier filteredClassifier, Instances trainingSet, Instances testingSet) {
         try {
             Evaluation eval = new Evaluation(testingSet);
-            classifier.buildClassifier(trainingSet);
-            eval.evaluateModel(classifier, testingSet);
-
+            if (filteredClassifier == null) {
+                classifier.buildClassifier(trainingSet);
+                eval.evaluateModel(classifier, testingSet);
+            } else {
+                filteredClassifier. buildClassifier(trainingSet);
+                eval.evaluateModel(filteredClassifier, testingSet);
+            }
             result.addValues(eval, trainingSet);
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             Logger.errorLog("Error evaluation");
         }
 

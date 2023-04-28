@@ -13,7 +13,8 @@ public class Constants {
     public static final String PATH_RESULTS = "results/";
     public static final String PATH_REPOSITORY = "path_repo.properties";
     public static final String JAVA_EXT = ".java";
-    public static final String PATH_RESULTS_PROJECT = PATH_RESULTS + MilestoneOne.PROJ_NAME + File.separator;
+    public static final String PATH_RESULTS_M1 = PATH_RESULTS + MilestoneOne.PROJ_NAME + File.separator;
+    public static final String PATH_RESULTS_M2 = PATH_RESULTS + MilestoneTwo.PROJ_NAME + File.separator;
 
     //Milestone one
     public static final String FIELDS = "fields";

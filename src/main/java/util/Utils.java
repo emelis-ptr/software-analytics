@@ -56,7 +56,7 @@ public class Utils {
      * @throws IOException :
      */
     public static void convertToArff() throws IOException {
-        String child = PATH_RESULTS_PROJECT + MilestoneTwo.PROJ_NAME + DATASET_CSV;
+        String child = PATH_RESULTS_M2 + MilestoneTwo.PROJ_NAME + DATASET_CSV;
         // load CSV
         CSVLoader loader = new CSVLoader();
         loader.setSource(new File(ROOT, child));

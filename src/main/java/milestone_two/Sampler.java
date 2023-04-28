@@ -89,18 +89,6 @@ public class Sampler {
 
             smote = new SMOTE();
             smote.setInputFormat(training);
-            double parameter = 0;
-            int numInstancesTrue = Result.getNumInstancesTrue(training);
-            int numInstancesFalse = training.numInstances() - numInstancesTrue;
-            if (numInstancesTrue < numInstancesFalse && numInstancesTrue != 0) {
-                parameter = ((double) numInstancesFalse - (double) numInstancesTrue) / numInstancesTrue * 100.0;
-            } else if (numInstancesTrue >= numInstancesFalse && numInstancesFalse != 0) {
-                parameter = ((double) numInstancesTrue - (double) numInstancesFalse) / numInstancesFalse * 100.0;
-            }
-
-            opts = new String[]{"-P", String.valueOf(parameter)};
-            smote.setOptions(opts);
-            smote.setInputFormat(training);
 
         } catch (Exception e) {
             Logger.errorLog("Errore SMOTE");
