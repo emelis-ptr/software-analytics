@@ -188,9 +188,7 @@ public class Dataset implements Comparable<Dataset> {
         if (!this.authors.isEmpty()) {
             this.setNumAuth(this.authors.size());
         } else {
-            // aggiungiamo uno perchè si assume che il file sia stato comunque
-            // creato e committato da qualcuno
-            this.setNumAuth(1);
+            this.setNumAuth(0);
         }
     }
 

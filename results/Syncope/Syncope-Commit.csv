@@ -3531,7 +3531,7 @@ dae8e14a747b1501072a6cce991f954e01dc6098;commit dae8e14a747b1501072a6cce991f954e
 0910230d04aaf0ba69be675b29d5c1d2cd3390ba;commit 0910230d04aaf0ba69be675b29d5c1d2cd3390ba 1470833958 -----sp;[SYNCOPE-915] provides reload of topology node panel;SYNCOPE-915;2016-08-10;fmartelli;34;
 67bfe1ebbc21149dce7965406f2d6e6226e2a508;commit 67bfe1ebbc21149dce7965406f2d6e6226e2a508 1470815770 -----sp;Upgrading Camel;;2016-08-10;Francesco Chicchiriccò;34;
 6f7040e30696860bb8b12b17d5f27cdc732a701f;commit 6f7040e30696860bb8b12b17d5f27cdc732a701f 1470815735 -----sp;[SYNCOPE-828] Russian translation for admin console: update - this closes #33;;2016-08-10;securny;34;
-3f279cd7b836c5d786ed21f5f400ab5d315a55f2;commit 3f279cd7b836c5d786ed21f5f400ab5d315a55f2 1470734090 -----sp;[SYNCOPE-905] provides role entitlement evaluation compliants with core side;SYNCOPE-905;2016-08-09;fmartelli;34;
+3f279cd7b836c5d786ed21f5f400ab5d315a55f2;commit 3f279cd7b836c5d786ed21f5f400ab5d315a55f2 1470734090 -----sp;[SYNCOPE-905] provides role entitlement result compliants with core side;SYNCOPE-905;2016-08-09;fmartelli;34;
 729de516b9dd0c86fb1b481a37e6b11c0492abf0;commit 729de516b9dd0c86fb1b481a37e6b11c0492abf0 1470664087 -----sp;SYNCOPE-918 fixes redirection to home page after user update;SYNCOPE-918;2016-08-08;Matteo Di Carlo;34;
 62e9636ae4abfd91df726e7628fb3adf0db3226a;commit 62e9636ae4abfd91df726e7628fb3adf0db3226a 1470650530 -----sp;[SYNCOPE-700] Workflow and approval;;2016-08-08;Francesco Chicchiriccò;34;
 12ef6f5041e33d505e10c7f5d7b56b8c5ff3b67f;commit 12ef6f5041e33d505e10c7f5d7b56b8c5ff3b67f 1470647204 -----sp;White noise: turning off yellow warnings in Netbeans;;2016-08-08;Francesco Chicchiriccò;34;
@@ -3595,7 +3595,7 @@ a4c9cfbecc96ef444e58348da772a891c7afef01;commit a4c9cfbecc96ef444e58348da772a891
 31dfc1c51663ee08588dbf671a95148cee257c1a;commit 31dfc1c51663ee08588dbf671a95148cee257c1a 1468838678 -----sp;[SYNCOPE-902] Feature provided;;2016-07-18;Francesco Chicchiriccò;34;
 8347a702b08b1c782dbaefd66b15a9914f7a4fca;commit 8347a702b08b1c782dbaefd66b15a9914f7a4fca 1468838665 -----sp;It appears latest JRebel version still does not work with Tomcat 8.5;;2016-07-18;Francesco Chicchiriccò;34;
 03c47ef4189163bd6acf0d4f030252d0e6ac1373;commit 03c47ef4189163bd6acf0d4f030252d0e6ac1373 1468834014 -----sp;[SYNCOPE-899] Description provided;SYNCOPE-899;2016-07-18;Francesco Chicchiriccò;34;
-5b4cf31e55e2fe245f18f08e2e5e085a7463a004;commit 5b4cf31e55e2fe245f18f08e2e5e085a7463a004 1468832795 -----sp;[SYNCOPE-888] improves mapped internal attribute evaluation;SYNCOPE-888;2016-07-18;fmartelli;34;
+5b4cf31e55e2fe245f18f08e2e5e085a7463a004;commit 5b4cf31e55e2fe245f18f08e2e5e085a7463a004 1468832795 -----sp;[SYNCOPE-888] improves mapped internal attribute result;SYNCOPE-888;2016-07-18;fmartelli;34;
 0016c6ac22d2c9d1604bf9325239dd1587179a51;commit 0016c6ac22d2c9d1604bf9325239dd1587179a51 1468823822 -----sp;Upgrading Wicket jQuery UI;;2016-07-18;Francesco Chicchiriccò;34;
 c10ea28819e0de686b9719617c647db219214c50;commit c10ea28819e0de686b9719617c647db219214c50 1468599269 -----sp;Proper fix for notification task search - see 14649394a351d087c4c2627bb4fa45f5fc3406dd;;2016-07-15;Francesco Chicchiriccò;34;
 d72296e4b44661fe839620838c5e7892977239d9;commit d72296e4b44661fe839620838c5e7892977239d9 1468599240 -----sp;Upgrading wicket-bootstrap;;2016-07-15;Francesco Chicchiriccò;34;
@@ -5763,7 +5763,7 @@ db704f0b255fb374f4a9e93c09ed0590bc472914;commit db704f0b255fb374f4a9e93c09ed0590
 633195d481132b9a2ea3f7fc741b38839c6d2357;commit 633195d481132b9a2ea3f7fc741b38839c6d2357 1397200085 -----sp;[maven-release-plugin] prepare release syncope-1.1.7;;2014-04-11;Francesco Chicchiriccò;17;
 2fc251c1ccabc5627abf1b793c64911e1518f906;commit 2fc251c1ccabc5627abf1b793c64911e1518f906 1397144445 -----sp;Merge from 1_1_X;;2014-04-10;Francesco Chicchiriccò;17;
 46052c4b6aeecf56473b54b62544a07b592e2483;commit 46052c4b6aeecf56473b54b62544a07b592e2483 1397143710 -----sp;Upgrading Spring Security and H2;;2014-04-10;Francesco Chicchiriccò;17;
-46864183920323eb5e64780919455dd880585d8d;commit 46864183920323eb5e64780919455dd880585d8d 1397141678 -----sp;[CVE-2014-0111] Refactoring JEXL evaluation;;2014-04-10;Francesco Chicchiriccò;17;
+46864183920323eb5e64780919455dd880585d8d;commit 46864183920323eb5e64780919455dd880585d8d 1397141678 -----sp;[CVE-2014-0111] Refactoring JEXL result;;2014-04-10;Francesco Chicchiriccò;17;
 a0e0490a4da6366822929d1bdb53e69c37e8d714;commit a0e0490a4da6366822929d1bdb53e69c37e8d714 1397110857 -----sp;Merge from 1_1_X;;2014-04-10;Francesco Chicchiriccò;17;
 4b3a3d8a05c4ee9b2c35b4d410996b441c66f354;commit 4b3a3d8a05c4ee9b2c35b4d410996b441c66f354 1397110808 -----sp;Upgrade to commons-lang3 3.3.2;;2014-04-10;Francesco Chicchiriccò;17;
 621b4a58f3fd3549abe4bda1b5e0c916fa408afc;commit 621b4a58f3fd3549abe4bda1b5e0c916fa408afc 1396855028 -----sp;Merge from 1_1_X;;2014-04-07;Francesco Chicchiriccò;17;
@@ -6125,7 +6125,7 @@ c2bfa60899c0d76eda38dc2ff4888c313741578c;commit c2bfa60899c0d76eda38dc2ff4888c31
 00166b51c13ddafa7a38919a636e24f436d29d26;commit 00166b51c13ddafa7a38919a636e24f436d29d26 1372333419 -----sp;Fixes SYNCOPE-397;SYNCOPE-397;2013-06-27;Fabio Martelli;13;
 8e7e89fe62a2874b18a7e6cdd02b26232ec11ca8;commit 8e7e89fe62a2874b18a7e6cdd02b26232ec11ca8 1372332262 -----sp;SYNCOPE-397 fixed on the branch 1.1.X. Thank you Andrea for your contribution;SYNCOPE-397;2013-06-27;Fabio Martelli;13;
 28c4e796b164e04778c5140eb2b60bb9afd0e8f1;commit 28c4e796b164e04778c5140eb2b60bb9afd0e8f1 1372085150 -----sp;Merge from branche to trunk;;2013-06-24;Marco Di Sabatino Di Diodoro;13;
-dfcb2632e95583dc35cb99f4cac19a363bff4b82;commit dfcb2632e95583dc35cb99f4cac19a363bff4b82 1372084185 -----sp;SYNCOPE-396 Fix removeAll and retainAll boolean expression evaluation;SYNCOPE-396;2013-06-24;Marco Di Sabatino Di Diodoro;13;
+dfcb2632e95583dc35cb99f4cac19a363bff4b82;commit dfcb2632e95583dc35cb99f4cac19a363bff4b82 1372084185 -----sp;SYNCOPE-396 Fix removeAll and retainAll boolean expression result;SYNCOPE-396;2013-06-24;Marco Di Sabatino Di Diodoro;13;
 d126c3f4c203c2aee2bf6307adbadb02d5933eee;commit d126c3f4c203c2aee2bf6307adbadb02d5933eee 1371808663 -----sp;merged from 1_1_X;;2013-06-21;Massimiliano Perrone;13;
 4b82114c065d071e4b1962187b20c44454045ac9;commit 4b82114c065d071e4b1962187b20c44454045ac9 1371808630 -----sp;properties not found error;;2013-06-21;Massimiliano Perrone;13;
 e6634454027559c9496626a5822cba4ce9ae55f6;commit e6634454027559c9496626a5822cba4ce9ae55f6 1371047684 -----sp;merged from 1_1_X;;2013-06-12;Massimiliano Perrone;13;
@@ -7493,7 +7493,7 @@ aabce0854d82827ec255d293e30c6ef163566579;commit aabce0854d82827ec255d293e30c6ef1
 bd5f550573b78492fd7861fa68490cc5a23a953b;commit bd5f550573b78492fd7861fa68490cc5a23a953b 1318848771 -----sp;bug-fix inheritance role attribute setting;;2011-10-17;Unknown;1;
 ee9c98147b78793ee877974fbafeb262b008269b;commit ee9c98147b78793ee877974fbafeb262b008269b 1318848381 -----sp;(Fixes 186);;2011-10-17;Unknown;1;
 ac29cebfb1ff8ac32d6c6b2aed999e3ce2d62368;commit ac29cebfb1ff8ac32d6c6b2aed999e3ce2d62368 1318845573 -----sp;Thank you Marco for your patch. Cold you extend changes to the overiiden properties also.;;2011-10-17;Unknown;1;
-4939b627e0b145af811937248eb9407132d625ad;commit 4939b627e0b145af811937248eb9407132d625ad 1318607302 -----sp;Extended password policy evaluation to the policies defined on resources and roles;;2011-10-14;Unknown;1;
+4939b627e0b145af811937248eb9407132d625ad;commit 4939b627e0b145af811937248eb9407132d625ad 1318607302 -----sp;Extended password policy result to the policies defined on resources and roles;;2011-10-14;Unknown;1;
 baf22db698f0308c1d4f14352326014b85564eef;commit baf22db698f0308c1d4f14352326014b85564eef 1318600728 -----sp;(Fixes issue 184);;2011-10-14;Unknown;1;
 c67b22d2d71817333a4fdb83f817a67dd87698d1;commit c67b22d2d71817333a4fdb83f817a67dd87698d1 1318600007 -----sp;Fixes issue 179;;2011-10-14;Unknown;1;
 110a4dcfcf00fd2338fdf56b107136af9dc82d92;commit 110a4dcfcf00fd2338fdf56b107136af9dc82d92 1318589689 -----sp;Fixes issue 176;;2011-10-14;Unknown;1;

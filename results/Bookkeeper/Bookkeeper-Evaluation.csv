@@ -1,0 +1,145 @@
+Dataset,#TrainingRelease,%Training,%Defective_training,%Defective_testing,Classifier, Balancing, FeatureSelection, TP,FP,TN,FN,Precision,Recall,ROC,Kappa
+Bookkeeper,1,43.79562,13.333334,8.116883,Random Forest,No resampling,No Selection,9.0,10.0,273.0,16.0,0.47368421052631576,0.36,0.9129328621908127,0.36454531026821185
+Bookkeeper,1,43.79562,13.333334,8.116883,Random Forest,No resampling,Best First,22.0,48.0,235.0,3.0,0.3142857142857143,0.88,0.9031802120141342,0.39021739130434774
+Bookkeeper,1,43.79562,13.333334,8.116883,Random Forest,Oversampling,No Selection,9.0,10.0,273.0,16.0,0.47368421052631576,0.36,0.9129328621908127,0.36454531026821185
+Bookkeeper,1,43.79562,13.333334,8.116883,Random Forest,Oversampling,Best First,22.0,48.0,235.0,3.0,0.3142857142857143,0.88,0.9031802120141342,0.39021739130434774
+Bookkeeper,1,43.79562,13.333334,8.116883,Random Forest,Undersampling,No Selection,9.0,10.0,273.0,16.0,0.47368421052631576,0.36,0.9129328621908127,0.36454531026821185
+Bookkeeper,1,43.79562,13.333334,8.116883,Random Forest,Undersampling,Best First,22.0,48.0,235.0,3.0,0.3142857142857143,0.88,0.9031802120141342,0.39021739130434774
+Bookkeeper,1,43.79562,13.333334,8.116883,Random Forest,Smote,No Selection,9.0,10.0,273.0,16.0,0.47368421052631576,0.36,0.9129328621908127,0.36454531026821185
+Bookkeeper,1,43.79562,13.333334,8.116883,Random Forest,Smote,Best First,22.0,48.0,235.0,3.0,0.3142857142857143,0.88,0.9031802120141342,0.39021739130434774
+Bookkeeper,1,43.79562,13.333334,8.116883,IBk,No resampling,No Selection,13.0,28.0,255.0,12.0,0.3170731707317073,0.52,0.712226148409894,0.3259656417551153
+Bookkeeper,1,43.79562,13.333334,8.116883,IBk,No resampling,Best First,18.0,39.0,244.0,7.0,0.3157894736842105,0.72,0.7955477031802121,0.367669374274748
+Bookkeeper,1,43.79562,13.333334,8.116883,IBk,Oversampling,No Selection,13.0,28.0,255.0,12.0,0.3170731707317073,0.52,0.712226148409894,0.3259656417551153
+Bookkeeper,1,43.79562,13.333334,8.116883,IBk,Oversampling,Best First,18.0,39.0,244.0,7.0,0.3157894736842105,0.72,0.7955477031802121,0.367669374274748
+Bookkeeper,1,43.79562,13.333334,8.116883,IBk,Undersampling,No Selection,13.0,28.0,255.0,12.0,0.3170731707317073,0.52,0.712226148409894,0.3259656417551153
+Bookkeeper,1,43.79562,13.333334,8.116883,IBk,Undersampling,Best First,18.0,39.0,244.0,7.0,0.3157894736842105,0.72,0.7955477031802121,0.367669374274748
+Bookkeeper,1,43.79562,13.333334,8.116883,IBk,Smote,No Selection,13.0,28.0,255.0,12.0,0.3170731707317073,0.52,0.712226148409894,0.3259656417551153
+Bookkeeper,1,43.79562,13.333334,8.116883,IBk,Smote,Best First,18.0,39.0,244.0,7.0,0.3157894736842105,0.72,0.7955477031802121,0.367669374274748
+Bookkeeper,1,43.79562,13.333334,8.116883,Naive Bayes,No resampling,No Selection,20.0,33.0,250.0,5.0,0.37735849056603776,0.8,0.8481978798586572,0.45241882661177135
+Bookkeeper,1,43.79562,13.333334,8.116883,Naive Bayes,No resampling,Best First,22.0,45.0,238.0,3.0,0.3283582089552239,0.88,0.913851590106007,0.4083086528455934
+Bookkeeper,1,43.79562,13.333334,8.116883,Naive Bayes,Oversampling,No Selection,20.0,33.0,250.0,5.0,0.37735849056603776,0.8,0.8481978798586572,0.45241882661177135
+Bookkeeper,1,43.79562,13.333334,8.116883,Naive Bayes,Oversampling,Best First,22.0,45.0,238.0,3.0,0.3283582089552239,0.88,0.913851590106007,0.4083086528455934
+Bookkeeper,1,43.79562,13.333334,8.116883,Naive Bayes,Undersampling,No Selection,20.0,33.0,250.0,5.0,0.37735849056603776,0.8,0.8481978798586572,0.45241882661177135
+Bookkeeper,1,43.79562,13.333334,8.116883,Naive Bayes,Undersampling,Best First,22.0,45.0,238.0,3.0,0.3283582089552239,0.88,0.913851590106007,0.4083086528455934
+Bookkeeper,1,43.79562,13.333334,8.116883,Naive Bayes,Smote,No Selection,20.0,33.0,250.0,5.0,0.37735849056603776,0.8,0.8481978798586572,0.45241882661177135
+Bookkeeper,1,43.79562,13.333334,8.116883,Naive Bayes,Smote,Best First,22.0,45.0,238.0,3.0,0.3283582089552239,0.88,0.913851590106007,0.4083086528455934
+Bookkeeper,2,55.521782,10.40146,0.0,Random Forest,No resampling,No Selection,0.0,13.0,426.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Random Forest,No resampling,Best First,0.0,62.0,377.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Random Forest,Oversampling,No Selection,0.0,13.0,426.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Random Forest,Oversampling,Best First,0.0,62.0,377.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Random Forest,Undersampling,No Selection,0.0,13.0,426.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Random Forest,Undersampling,Best First,0.0,62.0,377.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Random Forest,Smote,No Selection,0.0,13.0,426.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Random Forest,Smote,Best First,0.0,62.0,377.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,IBk,No resampling,No Selection,0.0,42.0,397.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,IBk,No resampling,Best First,0.0,68.0,371.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,IBk,Oversampling,No Selection,0.0,42.0,397.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,IBk,Oversampling,Best First,0.0,68.0,371.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,IBk,Undersampling,No Selection,0.0,42.0,397.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,IBk,Undersampling,Best First,0.0,68.0,371.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,IBk,Smote,No Selection,0.0,42.0,397.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,IBk,Smote,Best First,0.0,68.0,371.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Naive Bayes,No resampling,No Selection,0.0,82.0,357.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Naive Bayes,No resampling,Best First,0.0,42.0,397.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Naive Bayes,Oversampling,No Selection,0.0,82.0,357.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Naive Bayes,Oversampling,Best First,0.0,42.0,397.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Naive Bayes,Undersampling,No Selection,0.0,82.0,357.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Naive Bayes,Undersampling,Best First,0.0,42.0,397.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Naive Bayes,Smote,No Selection,0.0,82.0,357.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,2,55.521782,10.40146,0.0,Naive Bayes,Smote,Best First,0.0,42.0,397.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Random Forest,No resampling,No Selection,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Random Forest,No resampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Random Forest,Oversampling,No Selection,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Random Forest,Oversampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Random Forest,Undersampling,No Selection,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Random Forest,Undersampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Random Forest,Smote,No Selection,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Random Forest,Smote,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,IBk,No resampling,No Selection,0.0,4.0,435.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,IBk,No resampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,IBk,Oversampling,No Selection,0.0,4.0,435.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,IBk,Oversampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,IBk,Undersampling,No Selection,0.0,4.0,435.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,IBk,Undersampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,IBk,Smote,No Selection,0.0,4.0,435.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,IBk,Smote,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Naive Bayes,No resampling,No Selection,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Naive Bayes,No resampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Naive Bayes,Oversampling,No Selection,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Naive Bayes,Oversampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Naive Bayes,Undersampling,No Selection,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Naive Bayes,Undersampling,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Naive Bayes,Smote,No Selection,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,3,69.21459,5.775076,0.0,Naive Bayes,Smote,Best First,0.0,0.0,439.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Random Forest,No resampling,No Selection,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Random Forest,No resampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Random Forest,Oversampling,No Selection,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Random Forest,Oversampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Random Forest,Undersampling,No Selection,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Random Forest,Undersampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Random Forest,Smote,No Selection,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Random Forest,Smote,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,IBk,No resampling,No Selection,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,IBk,No resampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,IBk,Oversampling,No Selection,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,IBk,Oversampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,IBk,Undersampling,No Selection,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,IBk,Undersampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,IBk,Smote,No Selection,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,IBk,Smote,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Naive Bayes,No resampling,No Selection,0.0,1.0,586.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Naive Bayes,No resampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Naive Bayes,Oversampling,No Selection,0.0,1.0,586.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Naive Bayes,Oversampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Naive Bayes,Undersampling,No Selection,0.0,1.0,586.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Naive Bayes,Undersampling,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Naive Bayes,Smote,No Selection,0.0,1.0,586.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,4,70.76923,3.9971948,0.33955857,Naive Bayes,Smote,Best First,0.0,0.0,587.0,2.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Random Forest,No resampling,No Selection,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Random Forest,No resampling,Best First,0.0,1.0,615.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Random Forest,Oversampling,No Selection,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Random Forest,Oversampling,Best First,0.0,1.0,615.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Random Forest,Undersampling,No Selection,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Random Forest,Undersampling,Best First,0.0,1.0,615.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Random Forest,Smote,No Selection,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Random Forest,Smote,Best First,0.0,1.0,615.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,IBk,No resampling,No Selection,0.0,3.0,613.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,IBk,No resampling,Best First,0.0,6.0,610.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,IBk,Oversampling,No Selection,0.0,3.0,613.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,IBk,Oversampling,Best First,0.0,6.0,610.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,IBk,Undersampling,No Selection,0.0,3.0,613.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,IBk,Undersampling,Best First,0.0,6.0,610.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,IBk,Smote,No Selection,0.0,3.0,613.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,IBk,Smote,Best First,0.0,6.0,610.0,0.0,0.0,0.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Naive Bayes,No resampling,No Selection,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Naive Bayes,No resampling,Best First,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Naive Bayes,Oversampling,No Selection,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Naive Bayes,Oversampling,Best First,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Naive Bayes,Undersampling,No Selection,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Naive Bayes,Undersampling,Best First,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Naive Bayes,Smote,No Selection,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,5,76.586845,2.9280396,0.0,Naive Bayes,Smote,Best First,0.0,0.0,616.0,0.0,1.0,1.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Random Forest,No resampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Random Forest,No resampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Random Forest,Oversampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Random Forest,Oversampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Random Forest,Undersampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Random Forest,Undersampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Random Forest,Smote,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Random Forest,Smote,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,IBk,No resampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,IBk,No resampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,IBk,Oversampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,IBk,Oversampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,IBk,Undersampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,IBk,Undersampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,IBk,Smote,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,IBk,Smote,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Naive Bayes,No resampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Naive Bayes,No resampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Naive Bayes,Oversampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Naive Bayes,Oversampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Naive Bayes,Undersampling,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Naive Bayes,Undersampling,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Naive Bayes,Smote,No Selection,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0
+Bookkeeper,6,80.091324,2.2424932,0.15290521,Naive Bayes,Smote,Best First,0.0,0.0,653.0,1.0,0.0,0.0,0.0,0.0

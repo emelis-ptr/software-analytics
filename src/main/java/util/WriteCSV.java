@@ -2,6 +2,7 @@ package util;
 
 import entity.*;
 import milestone_one.MilestoneOne;
+import milestone_two.MilestoneTwo;
 
 import java.io.FileWriter;
 import java.util.List;
@@ -233,6 +234,58 @@ public class WriteCSV {
             }
         } catch (Exception e) {
             Logger.errorLog("Error in csv writer File");
+        }
+    }
+
+    public static void writeEvaluation(List<Result> info) {
+        String outname = PATH_RESULTS + MilestoneTwo.PROJ_NAME + "/" + MilestoneOne.PROJ_NAME + "-Evaluation.csv";
+
+        try (FileWriter fileWriter = new FileWriter(outname)) {
+            fileWriter.append("Dataset,#TrainingRelease,%Training,%Defective_training,%Defective_testing,Classifier, Balancing, " +
+                    "FeatureSelection, " +
+                    //"Sensitivity, " +
+                    "TP,FP,TN,FN,Precision,Recall,ROC,Kappa");
+            fileWriter.append("\n");
+
+            for (Result result : info) {
+                fileWriter.append(result.getProjName());
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getNumTrainingRelease()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getPercentageTraining()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getPercentageBuggyInTraining()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getPercentageBuggyInTesting()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getClassifierName()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getResamplingMethodName()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getFeatureSelectionName()));
+                fileWriter.append(",");
+                //fileWriter.append(String.valueOf(result.getCostSensitivity()));
+                //fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getTp()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getFp()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getTn()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getFn()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getPrecision()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getRecall()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getAuc()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(result.getKappa()));
+                fileWriter.append("\n");
+            }
+            Logger.infoLog("File " + MilestoneTwo.PROJ_NAME + "-Evaluation.csv completato");
+        } catch (Exception e) {
+            Logger.errorLog("Error in csv writer " + MilestoneTwo.PROJ_NAME + "-Evaluation.csv");
         }
     }
 
