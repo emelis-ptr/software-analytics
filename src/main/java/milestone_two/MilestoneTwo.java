@@ -1,29 +1,25 @@
 package milestone_two;
 
 import entity.Result;
+import enums.Balancing;
+import enums.Classifier;
+import enums.FeatureSelection;
+import enums.Project;
+import milestone_one.MilestoneOne;
 import util.Logger;
 import util.WriteCSV;
 import weka.core.Instances;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MilestoneTwo {
-    protected static final String[] PROJS_NAME = {"Bookkeeper", "Syncope"};
-    protected static final List<String> CLASSIFIER = new ArrayList<>(Arrays.asList("Random Forest", "IBk", "Naive Bayes"));
-    protected static final List<String> RESAMPLING = new ArrayList<>(Arrays.asList("No resampling", "Oversampling", "Undersampling", "Smote"));
-    protected static final List<String> FEATURE_SELECTION = new ArrayList<>(Arrays.asList("No Selection", "Best First"));
-    protected static final List<String> COST_SENSITIVE = new ArrayList<>(Arrays.asList("No Sensitive", "Sensitive Threshold", "Sensitive Learning"));
-
-
-    //bookkeeper = 0; syncope = 1
-    public static final String PROJ_NAME = PROJS_NAME[0];
+    public static final String PROJ_NAME2 = String.valueOf(Project.BOOKKEEPER);
 
     public static void main(String[] args) throws IOException {
         Logger.setupLogger();
-        Logger.infoLog(" --> " + PROJ_NAME);
+        Logger.infoLog(" --> " + MilestoneOne.project(PROJ_NAME2));
 
         int totalReleases = SplitDataset.findTotalReleasesNumber();
         Logger.infoLog(" --> Numero di release: " + totalReleases);
@@ -44,13 +40,13 @@ public class MilestoneTwo {
      */
     private static void evaluate(int totalReleases, List<Result> results) {
         for (int i = 2; i < totalReleases + 1; i++) {
-            for (String classifierName : CLASSIFIER) {
-                for (String resamplingMethodName : RESAMPLING) {
-                    for (String featureSelectionName : FEATURE_SELECTION) {
+            for (Classifier classifierName : Classifier.values()) {
+                for (Balancing resamplingMethodName : Balancing.values()) {
+                    for (FeatureSelection featureSelectionName : FeatureSelection.values()) {
                         Logger.infoLog(" --> Consideriamo: " + classifierName + ", " + resamplingMethodName + ", "
                                 + featureSelectionName);
                         Result result = new Result(classifierName, featureSelectionName, resamplingMethodName);
-                        result.setProjName(MilestoneTwo.PROJ_NAME);
+                        result.setProjName(MilestoneOne.project(PROJ_NAME2));
                         run(result, i);
                         results.add(result);
                     }

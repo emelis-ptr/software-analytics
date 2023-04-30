@@ -1,6 +1,5 @@
 package milestone_two;
 
-import entity.Result;
 import util.Logger;
 import weka.core.Instances;
 import weka.filters.supervised.instance.Resample;
@@ -12,8 +11,6 @@ public class Sampler {
     private Sampler() {
     }
 
-    private static String[] opts = new String[]{};
-
     /**
      * Undersampling
      *
@@ -23,7 +20,7 @@ public class Sampler {
     public static SpreadSubsample undersampling(Instances instances) {
 
         SpreadSubsample spreadSubsample = null;
-        opts = new String[]{"-M", "1.0"};
+        String[] opts = new String[]{"-M", "1.0"};
         try {
             spreadSubsample = new SpreadSubsample();
             spreadSubsample.setInputFormat(instances);
@@ -44,29 +41,11 @@ public class Sampler {
      * @return:
      */
     public static Resample oversampling(Instances training) {
-        int trainingSetSize = training.size();
-
         Resample resample = null;
         try {
 
             resample = new Resample();
             resample.setInputFormat(training);
-
-            //mi calcolo la percentuale della classe maggioritaria
-            int numInstancesTrue = Result.getNumInstancesTrue(training);
-            double percentageTrue = ((double) numInstancesTrue / trainingSetSize) * 100;
-            double percentageMajorityClass;
-
-            if (numInstancesTrue > (trainingSetSize - numInstancesTrue)) {
-                percentageMajorityClass = percentageTrue;
-            } else {
-                percentageMajorityClass = ((trainingSetSize - numInstancesTrue) / (double) trainingSetSize) * 100;
-            }
-
-            double doublePercentageMajorityClass = percentageMajorityClass * 2;
-
-            opts = new String[]{"-B", "1.0", "-Z", String.valueOf(doublePercentageMajorityClass)};
-            resample.setOptions(opts);
 
         } catch (Exception e) {
             Logger.errorLog("Errore Oversampling");

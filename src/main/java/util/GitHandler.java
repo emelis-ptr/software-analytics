@@ -71,7 +71,7 @@ public class GitHandler {
      * @return:
      */
     public static Iterable<RevCommit> logsCommits() throws IOException, GitAPIException {
-        Repository repository = GitHandler.repository(MilestoneOne.PATH_PROJ);
+        Repository repository = GitHandler.repository(MilestoneOne.path());
         Git git = new Git(repository);
         return git.log().call();
     }
@@ -83,7 +83,7 @@ public class GitHandler {
      * @return: git
      */
     public static Git git() throws IOException {
-        Path repoPath = GitHandler.returnPath(MilestoneOne.PATH_PROJ);
+        Path repoPath = GitHandler.returnPath(MilestoneOne.path());
         return Git.open(repoPath.toFile());
     }
 

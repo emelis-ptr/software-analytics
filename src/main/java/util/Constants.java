@@ -1,9 +1,11 @@
 package util;
 
 import milestone_one.MilestoneOne;
-import milestone_two.MilestoneTwo;
 
 import java.io.File;
+
+import static milestone_one.MilestoneOne.PROJ_NAME1;
+import static milestone_two.MilestoneTwo.PROJ_NAME2;
 
 public class Constants {
 
@@ -13,8 +15,8 @@ public class Constants {
     public static final String PATH_RESULTS = "results/";
     public static final String PATH_REPOSITORY = "path_repo.properties";
     public static final String JAVA_EXT = ".java";
-    public static final String PATH_RESULTS_M1 = PATH_RESULTS + MilestoneOne.PROJ_NAME + File.separator;
-    public static final String PATH_RESULTS_M2 = PATH_RESULTS + MilestoneTwo.PROJ_NAME + File.separator;
+    public static final String PATH_RESULTS_M1 = PATH_RESULTS + MilestoneOne.project(PROJ_NAME1) + File.separator;
+    public static final String PATH_RESULTS_M2 = PATH_RESULTS + MilestoneOne.project(PROJ_NAME2) + File.separator;
 
     //Milestone one
     public static final String FIELDS = "fields";
@@ -35,6 +37,6 @@ public class Constants {
     public static final String DATASET_CSV = "-Dataset.csv";
     public static final String DATASET_ARFF = "-Dataset.arff";
     public static final String ROOT = System.getProperty("user.dir");
-    public static final String PATH_RESULTS_ARFF = PATH_RESULTS + MilestoneTwo.PROJ_NAME + File.separator + "arff/";
+    public static final String PATH_RESULTS_ARFF = PATH_RESULTS + PROJ_NAME2 + File.separator + "arff/";
 
 }

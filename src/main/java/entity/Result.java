@@ -1,5 +1,8 @@
 package entity;
 
+import enums.Balancing;
+import enums.Classifier;
+import enums.FeatureSelection;
 import weka.classifiers.Evaluation;
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -8,9 +11,9 @@ import weka.core.Instances;
 public class Result {
     private String projName;
     private int numTrainingRelease;
-    private String classifierName;
-    private String resamplingMethodName;
-    private String featureSelectionName;
+    private Classifier classifierName;
+    private Balancing resamplingMethodName;
+    private FeatureSelection featureSelectionName;
     private String costSensitivity;
     private double tp;
     private double fp;
@@ -24,7 +27,7 @@ public class Result {
     private float percentageBuggyInTraining;
     private float percentageBuggyInTesting;
 
-    public Result(String classifierName, String featureSelectionName, String resamplingMethodName) {
+    public Result(Classifier classifierName, FeatureSelection featureSelectionName, Balancing resamplingMethodName) {
         this.classifierName = classifierName;
         this.featureSelectionName = featureSelectionName;
         this.resamplingMethodName = resamplingMethodName;
@@ -46,27 +49,27 @@ public class Result {
         this.numTrainingRelease = numTrainingRelease;
     }
 
-    public String getClassifierName() {
+    public Classifier getClassifierName() {
         return classifierName;
     }
 
-    public void setClassifierName(String classifierName) {
+    public void setClassifierName(Classifier classifierName) {
         this.classifierName = classifierName;
     }
 
-    public String getResamplingMethodName() {
+    public Balancing getResamplingMethodName() {
         return resamplingMethodName;
     }
 
-    public void setResamplingMethodName(String resamplingMethodName) {
+    public void setResamplingMethodName(Balancing resamplingMethodName) {
         this.resamplingMethodName = resamplingMethodName;
     }
 
-    public String getFeatureSelectionName() {
+    public FeatureSelection getFeatureSelectionName() {
         return featureSelectionName;
     }
 
-    public void setFeatureSelectionName(String featureSelectionName) {
+    public void setFeatureSelectionName(FeatureSelection featureSelectionName) {
         this.featureSelectionName = featureSelectionName;
     }
 

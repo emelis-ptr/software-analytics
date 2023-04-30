@@ -2,11 +2,12 @@ package util;
 
 import entity.*;
 import milestone_one.MilestoneOne;
-import milestone_two.MilestoneTwo;
 
 import java.io.FileWriter;
 import java.util.List;
 
+import static milestone_one.MilestoneOne.PROJ_NAME1;
+import static milestone_two.MilestoneTwo.PROJ_NAME2;
 import static util.Constants.PATH_RESULTS;
 
 public class WriteCSV {
@@ -20,7 +21,7 @@ public class WriteCSV {
      * @param releases: lista delle release
      */
     public static void writeRelease(List<Release> releases) {
-        String outname = PATH_RESULTS + MilestoneOne.PROJ_NAME + "/" + MilestoneOne.PROJ_NAME + "-Release.csv";
+        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME1) + "/" + MilestoneOne.project(PROJ_NAME1) + "-Release.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("Index;Version ID;Version Name;Date Creation");
@@ -47,7 +48,7 @@ public class WriteCSV {
      * @param ticketJiras: lista dei ticket presenti su Jira
      */
     public static void writeTicketJira(List<TicketJira> ticketJiras) {
-        String outname = PATH_RESULTS + MilestoneOne.PROJ_NAME + "/" + MilestoneOne.PROJ_NAME + "-TicketJira.csv";
+        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME1) + "/" + MilestoneOne.project(PROJ_NAME1) + "-TicketJira.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("Tickets ID; Date Creation; Resolution Date; Injected Version; Opening Version; Fixed Version; Affected Version");
@@ -85,7 +86,7 @@ public class WriteCSV {
      * @param dataset: metriche del dataset
      */
     public static void writeDataset(List<Dataset> dataset) {
-        String outname = PATH_RESULTS + MilestoneOne.PROJ_NAME + "/" + MilestoneOne.PROJ_NAME + "-Dataset.csv";
+        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME1) + "/" + MilestoneOne.project(PROJ_NAME1) + "-Dataset.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("Release, FileName, sizeLoc, locTouched, numR, numFix, numAuth, locAdded, avgLocAdded, maxLocAdded, churn, maxChurn, avgChurn, age, weightedAge, Bugginess");
@@ -140,7 +141,7 @@ public class WriteCSV {
      * @param commits: lista dei commit
      */
     public static void writeCommit(List<Commit> commits) {
-        String outname = PATH_RESULTS + MilestoneOne.PROJ_NAME + "/" + MilestoneOne.PROJ_NAME + "-Commit.csv";
+        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME1) + "/" + MilestoneOne.project(PROJ_NAME1) + "-Commit.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("ShadID; Commit; Message; Ticket; Date; Authors; Version; Files");
@@ -184,7 +185,7 @@ public class WriteCSV {
      * @param tickets: lista dei ticket
      */
     public static void writeTicket(List<Ticket> tickets) {
-        String outname = PATH_RESULTS + MilestoneOne.PROJ_NAME + "/" + MilestoneOne.PROJ_NAME + "-Ticket.csv";
+        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME1) + "/" + MilestoneOne.project(PROJ_NAME1) + "-Ticket.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("TicketID; Commit; LastCommit; LastDateCommit");
@@ -212,7 +213,7 @@ public class WriteCSV {
      * @param files: lista dei file
      */
     public static void writeFile(List<File> files) {
-        String outname = PATH_RESULTS + MilestoneOne.PROJ_NAME + "/" + MilestoneOne.PROJ_NAME + "-Files.csv";
+        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME1) + "/" + MilestoneOne.project(PROJ_NAME1) + "-Files.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("File name; Release; Commit; Old name file; SizeLOC; Age");
@@ -238,7 +239,7 @@ public class WriteCSV {
     }
 
     public static void writeEvaluation(List<Result> info) {
-        String outname = PATH_RESULTS + MilestoneTwo.PROJ_NAME + "/" + MilestoneOne.PROJ_NAME + "-Evaluation.csv";
+        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME2) + "/" + MilestoneOne.project(PROJ_NAME2) + "-Evaluation.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("Dataset,#TrainingRelease,%Training,%Defective_training,%Defective_testing,Classifier, Balancing, " +
@@ -283,9 +284,9 @@ public class WriteCSV {
                 fileWriter.append(String.valueOf(result.getKappa()));
                 fileWriter.append("\n");
             }
-            Logger.infoLog("File " + MilestoneTwo.PROJ_NAME + "-Evaluation.csv completato");
+            Logger.infoLog("File " + PROJ_NAME2 + "-Evaluation.csv completato");
         } catch (Exception e) {
-            Logger.errorLog("Error in csv writer " + MilestoneTwo.PROJ_NAME + "-Evaluation.csv");
+            Logger.errorLog("Error in csv writer " + PROJ_NAME2 + "-Evaluation.csv");
         }
     }
 

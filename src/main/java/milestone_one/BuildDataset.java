@@ -89,7 +89,7 @@ public class BuildDataset {
     private static void findClassTouched(Map<Release, List<Commit>> mapReleaseCommits) throws IOException {
         //diffFormatter trova le differenze da i tree di due commit (ovvero tra i file)
         DiffFormatter diffFormatter = new DiffFormatter(NullOutputStream.INSTANCE);
-        diffFormatter.setRepository(GitHandler.repository(MilestoneOne.PATH_PROJ));
+        diffFormatter.setRepository(GitHandler.repository(MilestoneOne.path()));
 
         mapReleaseCommits.forEach((key, value1) -> value1.forEach(commit -> {
             RevCommit revCommit = commit.getRevCommit();

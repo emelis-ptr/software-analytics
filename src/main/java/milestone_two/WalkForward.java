@@ -39,11 +39,11 @@ public class WalkForward {
         AbstractClassifier classifier = null;
 
         switch (result.getClassifierName()) {
-            case "Random Forest" -> //Random Forest
+            case RANDOM_FOREST -> //Random Forest
                     classifier = new RandomForest();
-            case "IBk" -> //IBk
+            case IBK -> //IBk
                     classifier = new IBk();
-            case "Naive Bayes" -> //Naive Bayes
+            case NAIVE_BAYES -> //Naive Bayes
                     classifier = new NaiveBayes();
             default -> {
                 Logger.errorLog("Errore nella selezione del classifier");
@@ -69,10 +69,10 @@ public class WalkForward {
         Instances filteredTesting = null;
 
         switch (result.getFeatureSelectionName()) {
-            case "No Selection": //No selection
+            case NO_SELECTION: //No selection
                 break;
 
-            case "Best First": //Best First
+            case BEST_FIRST: //Best First
                 filter = FeatureSelection.fsWithBestFirst(trainingSet);
 
                 try {
@@ -103,7 +103,7 @@ public class WalkForward {
     /**
      * Balancing
      *
-     * @param result:             result
+     * @param result:       result
      * @param classifier:   AbstractClassifier
      * @param trainingSet:  training set
      * @param testingSet:   testing set
@@ -115,10 +115,10 @@ public class WalkForward {
 
         switch (result.getResamplingMethodName()) {
 
-            case "No resampling": //No resampling
+            case NO_RESAMPLING: //No resampling
                 break;
 
-            case "Oversampling": //Oversampling
+            case OVERSAMPLING: //Oversampling
                 Resample resample = Sampler.oversampling(trainingSet);
 
                 filteredClassifier = new FilteredClassifier();
@@ -133,7 +133,7 @@ public class WalkForward {
 
                 break;
 
-            case "Undersampling": //Undersampling
+            case UNDERSAMPLING: //Undersampling
 
                 SpreadSubsample spreadSubsample = Sampler.undersampling(trainingSet);
 
@@ -149,7 +149,7 @@ public class WalkForward {
 
                 break;
 
-            case "Smote": //SMOTE
+            case SMOTE: //SMOTE
                 SMOTE smote = Sampler.smote(trainingSet);
 
                 filteredClassifier = new FilteredClassifier();
@@ -181,12 +181,12 @@ public class WalkForward {
      */
     public static void evaluate(Result result, AbstractClassifier classifier, FilteredClassifier filteredClassifier, Instances trainingSet, Instances testingSet) {
         try {
-            Evaluation eval = new Evaluation(testingSet);
+            Evaluation eval = new Evaluation(trainingSet);
             if (filteredClassifier == null) {
                 classifier.buildClassifier(trainingSet);
                 eval.evaluateModel(classifier, testingSet);
             } else {
-                filteredClassifier. buildClassifier(trainingSet);
+                filteredClassifier.buildClassifier(trainingSet);
                 eval.evaluateModel(filteredClassifier, testingSet);
             }
             result.addValues(eval, trainingSet);

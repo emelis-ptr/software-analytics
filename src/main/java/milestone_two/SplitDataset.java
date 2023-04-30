@@ -23,7 +23,7 @@ public class SplitDataset {
      * @return:
      */
     public static Instances[] setTestingTraining(int releaseIndex) throws Exception {
-        ConverterUtils.DataSource sourceTraining = new ConverterUtils.DataSource(PATH_RESULTS_ARFF + MilestoneTwo.PROJ_NAME + DATASET_ARFF);
+        ConverterUtils.DataSource sourceTraining = new ConverterUtils.DataSource(PATH_RESULTS_ARFF + MilestoneTwo.PROJ_NAME2 + DATASET_ARFF);
         Instances data = sourceTraining.getDataSet();
 
         Instances[] trainTest = new Instances[2];
@@ -53,7 +53,7 @@ public class SplitDataset {
      */
     public static Integer findTotalReleasesNumber() throws IOException {
         Utils.convertToArff();
-        String datasetPath = PATH_RESULTS_M2 + MilestoneTwo.PROJ_NAME + DATASET_CSV;
+        String datasetPath = PATH_RESULTS_M2 + MilestoneTwo.PROJ_NAME2 + DATASET_CSV;
 
         String line;
         int totalReleases = 1;
