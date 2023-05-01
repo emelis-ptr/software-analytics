@@ -61,13 +61,10 @@ public class Metric {
      * @param entry:      DiffEntry
      */
     public static void determineDefectiveClass(Dataset rowDataset, Commit commit, DiffEntry entry) {
-        if ((entry.getChangeType().equals(DiffEntry.ChangeType.MODIFY) || entry.getChangeType().equals(DiffEntry.ChangeType.DELETE))
-                && entry.getNewPath().endsWith(JAVA_EXT)) {
+        if ((entry.getChangeType().equals(DiffEntry.ChangeType.MODIFY) || entry.getChangeType().equals(DiffEntry.ChangeType.DELETE)) && entry.getNewPath().endsWith(JAVA_EXT)) {
             rowDataset.getFile().setOldNameFile(entry.getOldPath());
             TicketJira ticketJira = commit.getTicket();
-            if (commit.getTicket() != null
-                    && !ticketJira.getInjectedVersion().equals(ticketJira.getFixedVersion())
-                    && (rowDataset.getRelease().getNumVersion().equals(ticketJira.getInjectedVersion().getNumVersion()))) {
+            if (commit.getTicket() != null && !ticketJira.getInjectedVersion().equals(ticketJira.getFixedVersion()) && (rowDataset.getRelease().getNumVersion().equals(ticketJira.getInjectedVersion().getNumVersion()))) {
                 rowDataset.setBuggy(true);
             }
         }
@@ -82,8 +79,7 @@ public class Metric {
      * @param rowDataset:    row corrente del dataset
      * @throws IOException :
      */
-    public static void calculateLocMetrics(DiffEntry entry, DiffFormatter diffFormatter, Dataset rowDataset) throws
-            IOException {
+    public static void calculateLocMetrics(DiffEntry entry, DiffFormatter diffFormatter, Dataset rowDataset) throws IOException {
         int locTouched;
         int locAdded = 0;
         int locDeleted = 0;
@@ -173,34 +169,75 @@ public class Metric {
         }
     }
 
+    public static void determineMetricsUntilRelease(List<Dataset> dataset) {
+        Map<String, List<Date>> mapCreationDate = new HashMap<>();
+        Map<String, List<String>> mapAuthorsTot = new HashMap<>();
+        Map<String, Integer> mapLocTouchedTot = new HashMap<>();
+        Map<String, Integer> mapNumFixTot = new HashMap<>();
+        Map<String, Integer> mapNumRTot = new HashMap<>();
+
+        dataset.forEach(rowDataset -> {
+            findFileCreation(rowDataset, mapCreationDate);
+            determineAuthUntilRelease(rowDataset, mapAuthorsTot);
+            Utils.sumIntInMap(rowDataset, rowDataset.getLocTouched(), mapLocTouchedTot);
+            Utils.sumIntInMap(rowDataset, rowDataset.getNumFix(), mapNumFixTot);
+            Utils.sumIntInMap(rowDataset, rowDataset.getNumR(), mapNumRTot);
+
+            rowDataset.setLocTouchedTot(mapLocTouchedTot.get(rowDataset.getFile().getNameFile()));
+            rowDataset.setNumFixTot(mapNumFixTot.get(rowDataset.getFile().getNameFile()));
+            rowDataset.setNumRTot(mapNumRTot.get(rowDataset.getFile().getNameFile()));
+        });
+    }
+
+
     /**
      * Trova la data di creazione del file
      *
-     * @param dataset: dataset
+     * @param rowDataset:      record del dataset
+     * @param mapCreationDate: map Map<String, List<Date>>, con chiave: nome file
+     *                         e valore: lista delle date dei commit associate a quel file
      */
-    public static void findFileCreation(List<Dataset> dataset) {
-        Map<String, List<Date>> mapCreationDate = new HashMap<>();
-
-        dataset.forEach(rowDataset -> {
-            String nameFile = rowDataset.getFile().getNameFile();
-            List<Date> commitsDate = new ArrayList<>();
-            try {
-                if (!mapCreationDate.containsKey(nameFile)) {
-                    GitHandler.git().log()
-                            .addPath(nameFile).call()
-                            .forEach(revCommit -> commitsDate.add(revCommit.getCommitterIdent().getWhen()));
-                    mapCreationDate.put(nameFile, commitsDate);
-                }
-            } catch (GitAPIException | IOException e) {
-                Logger.errorLog("Errore in Git per recuperare il primo commit del file");
+    private static void findFileCreation(Dataset rowDataset, Map<String, List<Date>> mapCreationDate) {
+        String nameFile = rowDataset.getFile().getNameFile();
+        List<Date> commitsDate = new ArrayList<>();
+        try {
+            if (!mapCreationDate.containsKey(nameFile)) {
+                GitHandler.git().log()
+                        .addPath(nameFile).call()
+                        .forEach(revCommit -> commitsDate.add(revCommit.getCommitterIdent().getWhen()));
+                mapCreationDate.put(nameFile, commitsDate);
             }
+        } catch (GitAPIException | IOException e) {
+            Logger.errorLog("Errore in Git per recuperare il primo commit del file");
+        }
 
-            mapCreationDate.forEach((key, value) -> value.sort(Comparator.comparing(Date::getTime)));
+        mapCreationDate.forEach((key, value) -> value.sort(Comparator.comparing(Date::getTime)));
 
-            if (mapCreationDate.containsKey(nameFile) && !mapCreationDate.get(nameFile).isEmpty()) {
-                LocalDate dateCommit = Utils.convertToLocalDate(mapCreationDate.get(nameFile).get(0));
-                rowDataset.getFile().setFileCreation(dateCommit);
+        if (mapCreationDate.containsKey(nameFile) && !mapCreationDate.get(nameFile).isEmpty()) {
+            LocalDate dateCommit = Utils.convertToLocalDate(mapCreationDate.get(nameFile).get(0));
+            rowDataset.getFile().setFileCreation(dateCommit);
+        }
+    }
+
+    /**
+     * Determina il numero di autori dalla prima release fino alla release corrente
+     *
+     * @param rowDataset:    record del dataset
+     * @param mapAuthorsTot: mappa Map<String, List<String>>, con chiave: nome del file
+     *                       e valore: lista di autori
+     */
+    private static void determineAuthUntilRelease(Dataset rowDataset, Map<String, List<String>> mapAuthorsTot) {
+        rowDataset.getAuthors().forEach(author -> {
+            if (!mapAuthorsTot.containsKey(rowDataset.getFile().getNameFile())) {
+                mapAuthorsTot.put(rowDataset.getFile().getNameFile(), new ArrayList<>());
+                mapAuthorsTot.get(rowDataset.getFile().getNameFile()).add(author);
+            } else {
+                if (!mapAuthorsTot.get(rowDataset.getFile().getNameFile()).contains(author)) {
+                    mapAuthorsTot.get(rowDataset.getFile().getNameFile()).add(author);
+                }
             }
         });
+
+        rowDataset.setNumAuthTot(mapAuthorsTot.get(rowDataset.getFile().getNameFile()).size());
     }
 }

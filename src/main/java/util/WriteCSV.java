@@ -89,7 +89,7 @@ public class WriteCSV {
         String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME1) + "/" + MilestoneOne.project(PROJ_NAME1) + "-Dataset.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
-            fileWriter.append("Release, FileName, sizeLoc, locTouched, numR, numFix, numAuth, locAdded, avgLocAdded, maxLocAdded, churn, maxChurn, avgChurn, age, weightedAge, Bugginess");
+            fileWriter.append("Release, FileName, sizeLoc, locTouched, locTouchedTot, numR, numRTot, numFix, numFixTot, numAuth, numAuthTot, locAdded, avgLocAdded, maxLocAdded, churn, maxChurn, avgChurn, age, weightedAge, Bugginess");
             fileWriter.append("\n");
 
             for (Dataset rowDataset : dataset) {
@@ -101,11 +101,19 @@ public class WriteCSV {
                 fileWriter.append(",");
                 fileWriter.append(String.valueOf(rowDataset.getLocTouched()));
                 fileWriter.append(",");
+                fileWriter.append(String.valueOf(rowDataset.getLocTouchedTot()));
+                fileWriter.append(",");
                 fileWriter.append(String.valueOf(rowDataset.getNumR()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(rowDataset.getNumRTot()));
                 fileWriter.append(",");
                 fileWriter.append(String.valueOf(rowDataset.getNumFix()));
                 fileWriter.append(",");
+                fileWriter.append(String.valueOf(rowDataset.getNumFixTot()));
+                fileWriter.append(",");
                 fileWriter.append(String.valueOf(rowDataset.getNumAuth()));
+                fileWriter.append(",");
+                fileWriter.append(String.valueOf(rowDataset.getNumAuthTot()));
                 fileWriter.append(",");
                 fileWriter.append(String.valueOf(rowDataset.getLocAdded()));
                 fileWriter.append(",");

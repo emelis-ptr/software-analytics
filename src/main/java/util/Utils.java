@@ -1,5 +1,6 @@
 package util;
 
+import entity.Dataset;
 import milestone_two.MilestoneTwo;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
@@ -10,11 +11,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static util.Constants.*;
-import static util.Constants.ROOT;
 
 public class Utils {
     private Utils() {
@@ -68,6 +69,21 @@ public class Utils {
         String saveFile = PATH_RESULTS_ARFF + MilestoneTwo.PROJ_NAME2 + DATASET_ARFF;
         saver.setFile(new File(ROOT, saveFile));
         saver.writeBatch();
+    }
+
+    /**
+     * Somma per ogni chiave presente il valore
+     *
+     * @param rowDataset: record del dataset
+     * @param map:        mappa Map<String, Integer>, con chiave: nome file
+     */
+    public static void sumIntInMap(Dataset rowDataset, int value, Map<String, Integer> map) {
+        if (!map.containsKey(rowDataset.getFile().getNameFile())) {
+            map.put(rowDataset.getFile().getNameFile(), value);
+        } else {
+            int newValue = map.get(rowDataset.getFile().getNameFile()) + value;
+            map.put(rowDataset.getFile().getNameFile(), newValue);
+        }
     }
 
 }

@@ -74,7 +74,7 @@ public class BuildDataset {
         // si trovano i file che sono stati toccati
         findClassTouched(mapReleaseCommits);
         // si trova il primo commit associato al file per determinare la sua data di creazione
-        Metric.findFileCreation(dataset);
+        Metric.determineMetricsUntilRelease(dataset);
 
         WriteCSV.writeFile(files);
         return dataset;

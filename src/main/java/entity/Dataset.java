@@ -8,10 +8,14 @@ public class Dataset implements Comparable<Dataset> {
     private File file;
     private int sizeLoc;
     private int locTouched;
+    private int locTouchedTot;
     private int numR;
+    private int numRTot;
     private int numFix;
+    private int numFixTot;
     private List<String> authors;
     private int numAuth;
+    private int numAuthTot;
     private int locAdded;
     private int maxLocAdded;
     private float avgLocAdded;
@@ -64,6 +68,14 @@ public class Dataset implements Comparable<Dataset> {
         this.locTouched += locTouched;
     }
 
+    public int getLocTouchedTot() {
+        return locTouchedTot;
+    }
+
+    public void setLocTouchedTot(int locTouchedTot) {
+        this.locTouchedTot = locTouchedTot;
+    }
+
     public int getNumR() {
         return numR;
     }
@@ -72,12 +84,28 @@ public class Dataset implements Comparable<Dataset> {
         this.numR = numR;
     }
 
+    public int getNumRTot() {
+        return numRTot;
+    }
+
+    public void setNumRTot(int numRTot) {
+        this.numRTot = numRTot;
+    }
+
     public int getNumFix() {
         return numFix;
     }
 
     public void setNumFix(int numFix) {
         this.numFix = numFix;
+    }
+
+    public int getNumFixTot() {
+        return numFixTot;
+    }
+
+    public void setNumFixTot(int numFixTot) {
+        this.numFixTot = numFixTot;
     }
 
     public List<String> getAuthors() {
@@ -95,6 +123,14 @@ public class Dataset implements Comparable<Dataset> {
 
     public void setNumAuth(int numAuth) {
         this.numAuth = numAuth;
+    }
+
+    public int getNumAuthTot() {
+        return numAuthTot;
+    }
+
+    public void setNumAuthTot(int numAuthTot) {
+        this.numAuthTot = numAuthTot;
     }
 
     public int getLocAdded() {
@@ -199,14 +235,18 @@ public class Dataset implements Comparable<Dataset> {
 
     @Override
     public String toString() {
-        return " ** Metrics ** {" +
-                "entity.Release=" + release.getNumVersion() +
-                ", fileName= " + file.getNameFile() +
-                ", sizeFile=" + sizeLoc +
+        return "Dataset{" +
+                "release=" + release.getNumVersion() +
+                ", file=" + file.getNameFile() +
+                ", sizeLoc=" + sizeLoc +
                 ", locTouched=" + locTouched +
+                ", locTouchedTot=" + locTouchedTot +
                 ", numR=" + numR +
+                ", numRTot=" + numRTot +
                 ", numFix=" + numFix +
+                ", numFixTot=" + numFixTot +
                 ", numAuth=" + numAuth +
+                ", numAuthTot=" + numAuthTot +
                 ", locAdded=" + locAdded +
                 ", maxLocAdded=" + maxLocAdded +
                 ", avgLocAdded=" + avgLocAdded +
@@ -216,7 +256,7 @@ public class Dataset implements Comparable<Dataset> {
                 ", age=" + age +
                 ", weightedAge=" + weightedAge +
                 ", isBuggy=" + isBuggy +
-                '}' + "\n";
+                '}';
     }
 
     @Override
