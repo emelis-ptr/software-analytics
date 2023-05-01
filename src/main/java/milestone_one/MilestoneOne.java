@@ -12,11 +12,11 @@ import java.text.ParseException;
 import java.util.List;
 
 public class MilestoneOne {
-    public static final String PROJ_NAME1 = String.valueOf(Project.BOOKKEEPER);
+    public static final String PROJ_NAME_M1 = String.valueOf(Project.BOOKKEEPER);
 
     public static void main(String[] args) {
         Logger.setupLogger();
-        Logger.infoLog(" --> " + project(PROJ_NAME1));
+        Logger.infoLog(" --> " + project(PROJ_NAME_M1));
         try {
             Logger.infoLog(" --> Determiniamo le release");
             List<Release> releases = RetrieveRelease.retrieveRelease();
@@ -63,7 +63,7 @@ public class MilestoneOne {
      * @return: path corrispondente al progetto
      */
     public static String path() {
-        return switch (project(PROJ_NAME1)) {
+        return switch (project(PROJ_NAME_M1)) {
             case "Bookkeeper" -> String.valueOf(Path.PATH_BOOKKEEPER);
             case "Syncope" -> String.valueOf(Path.PATH_SYNCOPE);
             default -> "";

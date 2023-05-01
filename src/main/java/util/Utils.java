@@ -55,7 +55,7 @@ public class Utils {
      * @throws IOException :
      */
     public static void convertToArff() throws IOException {
-        String child = PATH_RESULTS_M2 + MilestoneTwo.PROJ_NAME2 + DATASET_CSV;
+        String child = PATH_RESULTS_M2 + MilestoneTwo.PROJ_NAME_M2 + DATASET_CSV;
         // load CSV
         CSVLoader loader = new CSVLoader();
         loader.setSource(new File(ROOT, child));
@@ -64,7 +64,7 @@ public class Utils {
         ArffSaver saver = new ArffSaver();
         saver.setInstances(data);//set the dataset we want to convert
         //and save as ARFF
-        String saveFile = PATH_RESULTS_ARFF + MilestoneTwo.PROJ_NAME2 + DATASET_ARFF;
+        String saveFile = PATH_RESULTS_ARFF + MilestoneTwo.PROJ_NAME_M2 + DATASET_ARFF;
         saver.setFile(new File(ROOT, saveFile));
         saver.writeBatch();
     }

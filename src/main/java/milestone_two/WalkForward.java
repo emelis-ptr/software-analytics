@@ -1,6 +1,10 @@
 package milestone_two;
 
 import entity.Result;
+import milestone_two.balancing.Oversampling;
+import milestone_two.balancing.Smote;
+import milestone_two.balancing.Undersampling;
+import milestone_two.feature_selection.BestFirst;
 import util.Logger;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
@@ -29,11 +33,6 @@ public class WalkForward {
     public static void runWalkFarward(Result result, Instances[] instances, int indexRelease) {
         Instances trainingSet = instances[0];
         Instances testingSet = instances[1];
-
-        //setta la feature da predire
-        int numAttr = trainingSet.numAttributes();
-        trainingSet.setClassIndex(numAttr - 1);
-        testingSet.setClassIndex(numAttr - 1);
 
         //Scelta del classificatore
         AbstractClassifier classifier = null;
@@ -65,39 +64,31 @@ public class WalkForward {
     private static void chooseFeatureSelection(Result result, AbstractClassifier classifier, Instances trainingSet, Instances testingSet, int indexRelease) {
         Filter filter;
 
-        Instances filteredTraining = null;
-        Instances filteredTesting = null;
-
         switch (result.getFeatureSelectionName()) {
-            case NO_SELECTION: //No selection
-                break;
-
-            case BEST_FIRST: //Best First
-                filter = FeatureSelection.fsWithBestFirst(trainingSet);
-
+            case NO_SELECTION -> { //No selection
+                //setta la feature da predire
+                trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
+                testingSet.setClassIndex(trainingSet.numAttributes() - 1);
+            }
+            case BEST_FIRST -> { //Best First
+                filter = BestFirst.fsWithBestFirst(trainingSet);
                 try {
-                    filteredTraining = Filter.useFilter(trainingSet, filter);
-                    filteredTesting = Filter.useFilter(testingSet, filter);
+                    trainingSet = Filter.useFilter(trainingSet, filter);
+                    testingSet = Filter.useFilter(testingSet, filter);
 
-                    filteredTraining.setClassIndex(filteredTraining.numAttributes() - 1);
-                    filteredTesting.setClassIndex(filteredTraining.numAttributes() - 1);
+                    trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
+                    testingSet.setClassIndex(trainingSet.numAttributes() - 1);
 
                 } catch (Exception e1) {
-                    Logger.errorLog("Errore nell'applicazione di Feature Selection");
+                    Logger.errorLog("Errore nella feature selection BestFirst");
                 }
-                break;
-
-            default:
+            }
+            default -> {
                 Logger.errorLog("Errore nella selezione della feature selection");
                 System.exit(1);
-                break;
+            }
         }
-        // dato che non viene applicata sempre la feature selection
-        // assegniamo il training set e il testing set originale
-        if (filteredTraining == null) filteredTraining = trainingSet;
-        if (filteredTesting == null) filteredTesting = testingSet;
-
-        chooseBalancing(result, classifier, filteredTraining, filteredTesting, indexRelease);
+        chooseBalancing(result, classifier, trainingSet, testingSet, indexRelease);
     }
 
     /**
@@ -119,7 +110,7 @@ public class WalkForward {
                 break;
 
             case OVERSAMPLING: //Oversampling
-                Resample resample = Sampler.oversampling(trainingSet);
+                Resample resample = Oversampling.oversampling(trainingSet);
 
                 filteredClassifier = new FilteredClassifier();
                 filteredClassifier.setClassifier(classifier);
@@ -135,7 +126,7 @@ public class WalkForward {
 
             case UNDERSAMPLING: //Undersampling
 
-                SpreadSubsample spreadSubsample = Sampler.undersampling(trainingSet);
+                SpreadSubsample spreadSubsample = Undersampling.undersampling(trainingSet);
 
                 filteredClassifier = new FilteredClassifier();
                 filteredClassifier.setClassifier(classifier);
@@ -150,7 +141,7 @@ public class WalkForward {
                 break;
 
             case SMOTE: //SMOTE
-                SMOTE smote = Sampler.smote(trainingSet);
+                SMOTE smote = Smote.smote(trainingSet);
 
                 filteredClassifier = new FilteredClassifier();
                 filteredClassifier.setClassifier(classifier);
@@ -167,8 +158,8 @@ public class WalkForward {
                 break;
         }
 
-        result.addPercentage(trainingSet, testingSet, indexRelease);
-        evaluate(result, classifier, filteredClassifier, trainingSet, testingSet);
+        result.addPercentageBuggyness(trainingSet, testingSet, indexRelease);
+        evaluation(result, classifier, filteredClassifier, trainingSet, testingSet);
     }
 
     /**
@@ -179,9 +170,9 @@ public class WalkForward {
      * @param trainingSet: training set
      * @param testingSet:  testing set
      */
-    public static void evaluate(Result result, AbstractClassifier classifier, FilteredClassifier filteredClassifier, Instances trainingSet, Instances testingSet) {
+    private static void evaluation(Result result, AbstractClassifier classifier, FilteredClassifier filteredClassifier, Instances trainingSet, Instances testingSet) {
         try {
-            Evaluation eval = new Evaluation(trainingSet);
+            Evaluation eval = new Evaluation(testingSet);
             if (filteredClassifier == null) {
                 classifier.buildClassifier(trainingSet);
                 eval.evaluateModel(classifier, testingSet);
@@ -189,7 +180,7 @@ public class WalkForward {
                 filteredClassifier.buildClassifier(trainingSet);
                 eval.evaluateModel(filteredClassifier, testingSet);
             }
-            result.addValues(eval, trainingSet);
+            result.addValues(eval);
         } catch (
                 Exception e) {
             Logger.errorLog("Error evaluation");

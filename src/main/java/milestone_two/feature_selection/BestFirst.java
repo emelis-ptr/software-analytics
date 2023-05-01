@@ -1,4 +1,4 @@
-package milestone_two;
+package milestone_two.feature_selection;
 
 import util.Logger;
 import weka.attributeSelection.CfsSubsetEval;
@@ -7,9 +7,9 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 
-public class FeatureSelection {
+public class BestFirst {
 
-    private FeatureSelection() {
+    private BestFirst() {
     }
 
     public static Filter fsWithBestFirst(Instances trainingSet) {

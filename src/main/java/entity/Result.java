@@ -4,7 +4,6 @@ import enums.Balancing;
 import enums.Classifier;
 import enums.FeatureSelection;
 import weka.classifiers.Evaluation;
-import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -176,7 +175,7 @@ public class Result {
      * @param testing:      testing set
      * @param releaseIndex: numero della release
      */
-    public void addPercentage(Instances training, Instances testing, int releaseIndex) {
+    public void addPercentageBuggyness(Instances training, Instances testing, int releaseIndex) {
         this.numTrainingRelease = releaseIndex - 1;
 
         int numInstancesTraining = training.numInstances();
@@ -206,15 +205,13 @@ public class Result {
      * Si aggiungono i valori di TP, FP, TN, FN, Precision, Recall, Auc e Kappa
      *
      * @param eval:        Evaluation
-     * @param trainingSet: training set
      */
-    public void addValues(Evaluation eval, Instances trainingSet) {
-        int positiveResultIndex = getNumInstancesTrue(trainingSet);
-
-        this.tp = eval.numTruePositives(positiveResultIndex);
-        this.fp = eval.numFalsePositives(positiveResultIndex);
-        this.tn = eval.numTrueNegatives(positiveResultIndex);
-        this.fn = eval.numFalseNegatives(positiveResultIndex);
+    public void addValues(Evaluation eval) {
+        int classIndex = 0;
+        this.tp = eval.numTruePositives(classIndex);
+        this.fp = eval.numFalsePositives(classIndex);
+        this.tn = eval.numTrueNegatives(classIndex);
+        this.fn = eval.numFalseNegatives(classIndex);
 
         if (tp == 0 && fp == 0 && fn == 0) {
             this.precision = 1;
@@ -225,36 +222,11 @@ public class Result {
         } else if (fp == 0 && tn == 0) {
             this.auc = 0;
         } else {
-            this.precision = eval.precision(positiveResultIndex);
-            this.recall = eval.recall(positiveResultIndex);
-            this.auc = eval.areaUnderROC(1);
+            this.precision = eval.precision(classIndex);
+            this.recall = eval.recall(classIndex);
+            this.auc = eval.areaUnderROC(classIndex);
             this.kappa = eval.kappa();
         }
-    }
-
-    /**
-     * Determina il numero di instanze true nel training set
-     *
-     * @param training: training set
-     * @return:
-     */
-    public static int getNumInstancesTrue(Instances training) {
-        int positiveValueIndexOfClassFeature = 0;
-        int classFeatureIndex = 0;
-        for (int i = 0; i < training.numAttributes(); i++) {
-            if (training.attribute(i).name().equals(" Bugginess")) {
-                classFeatureIndex = i;
-                break;
-            }
-        }
-
-        Attribute classFeature = training.attribute(classFeatureIndex);
-        for (int i = 0; i < classFeature.numValues(); i++) {
-            if (classFeature.value(i).equals("true")) {
-                positiveValueIndexOfClassFeature += i;
-            }
-        }
-        return positiveValueIndexOfClassFeature;
     }
 
     @Override

@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MilestoneTwo {
-    public static final String PROJ_NAME2 = String.valueOf(Project.BOOKKEEPER);
+    public static final String PROJ_NAME_M2 = String.valueOf(Project.BOOKKEEPER);
 
     public static void main(String[] args) throws IOException {
         Logger.setupLogger();
-        Logger.infoLog(" --> " + MilestoneOne.project(PROJ_NAME2));
+        Logger.infoLog(" --> " + MilestoneOne.project(PROJ_NAME_M2));
 
-        int totalReleases = SplitDataset.findTotalReleasesNumber();
+        int totalReleases = TrainingAndTestingSet.findTotalReleasesNumber();
         Logger.infoLog(" --> Numero di release: " + totalReleases);
 
         ArrayList<Result> results = new ArrayList<>();
@@ -33,7 +33,7 @@ public class MilestoneTwo {
     }
 
     /**
-     * Calcola i valori per ogni classifier, resampling, feature selection
+     * Calcola le metriche per ogni classifier, resampling, feature selection
      *
      * @param totalReleases: numero totale delle release
      * @param results:       lista dei risultati finali
@@ -46,7 +46,7 @@ public class MilestoneTwo {
                         Logger.infoLog(" --> Consideriamo: " + classifierName + ", " + resamplingMethodName + ", "
                                 + featureSelectionName);
                         Result result = new Result(classifierName, featureSelectionName, resamplingMethodName);
-                        result.setProjName(MilestoneOne.project(PROJ_NAME2));
+                        result.setProjName(MilestoneOne.project(PROJ_NAME_M2));
                         run(result, i);
                         results.add(result);
                     }
@@ -63,10 +63,10 @@ public class MilestoneTwo {
      */
     private static void run(Result result, int i) {
         try {
-            Instances[] instances = SplitDataset.setTestingTraining(i);
+            Instances[] instances = TrainingAndTestingSet.setTestingTraining(i);
             WalkForward.runWalkFarward(result, instances, i);
         } catch (Exception e) {
-            Logger.errorLog("Exception Datasource");
+            Logger.errorLog("Exception training and testing set");
         }
     }
 }
