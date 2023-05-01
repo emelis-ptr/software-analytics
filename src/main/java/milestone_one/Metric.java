@@ -171,22 +171,26 @@ public class Metric {
 
     public static void determineMetricsUntilRelease(List<Dataset> dataset) {
         Map<String, List<Date>> mapCreationDate = new HashMap<>();
-        Map<String, List<String>> mapAuthorsTot = new HashMap<>();
-        Map<String, Integer> mapLocTouchedTot = new HashMap<>();
-        Map<String, Integer> mapNumFixTot = new HashMap<>();
-        Map<String, Integer> mapNumRTot = new HashMap<>();
 
         dataset.forEach(rowDataset -> {
-            findFileCreation(rowDataset, mapCreationDate);
-            determineAuthUntilRelease(rowDataset, mapAuthorsTot);
-            Utils.sumIntInMap(rowDataset, rowDataset.getLocTouched(), mapLocTouchedTot);
-            Utils.sumIntInMap(rowDataset, rowDataset.getNumFix(), mapNumFixTot);
-            Utils.sumIntInMap(rowDataset, rowDataset.getNumR(), mapNumRTot);
+            List<String> authors = new ArrayList<>();
+            List<Dataset> filtered = dataset.stream().filter(rowDataset1 ->
+                            rowDataset1.getFile().getNameFile().equals(rowDataset.getFile().getNameFile())
+                                    && rowDataset1.getRelease().getNumVersion() <= rowDataset.getRelease().getNumVersion())
+                    .toList();
 
-            rowDataset.setLocTouchedTot(mapLocTouchedTot.get(rowDataset.getFile().getNameFile()));
-            rowDataset.setNumFixTot(mapNumFixTot.get(rowDataset.getFile().getNameFile()));
-            rowDataset.setNumRTot(mapNumRTot.get(rowDataset.getFile().getNameFile()));
+            findFileCreation(rowDataset, mapCreationDate);
+            filtered.forEach(f -> f.getAuthors().forEach(a -> {
+                if (!authors.contains(a)) {
+                    authors.add(a);
+                }
+            }));
+            rowDataset.setNumAuthTot(authors.size());
+            rowDataset.setLocTouchedTot(filtered.stream().mapToInt(Dataset::getLocTouched).sum());
+            rowDataset.setNumFixTot(filtered.stream().mapToInt(Dataset::getNumFix).sum());
+            rowDataset.setNumRTot(filtered.stream().mapToInt(Dataset::getNumR).sum());
         });
+
     }
 
 
@@ -219,25 +223,4 @@ public class Metric {
         }
     }
 
-    /**
-     * Determina il numero di autori dalla prima release fino alla release corrente
-     *
-     * @param rowDataset:    record del dataset
-     * @param mapAuthorsTot: mappa Map<String, List<String>>, con chiave: nome del file
-     *                       e valore: lista di autori
-     */
-    private static void determineAuthUntilRelease(Dataset rowDataset, Map<String, List<String>> mapAuthorsTot) {
-        rowDataset.getAuthors().forEach(author -> {
-            if (!mapAuthorsTot.containsKey(rowDataset.getFile().getNameFile())) {
-                mapAuthorsTot.put(rowDataset.getFile().getNameFile(), new ArrayList<>());
-                mapAuthorsTot.get(rowDataset.getFile().getNameFile()).add(author);
-            } else {
-                if (!mapAuthorsTot.get(rowDataset.getFile().getNameFile()).contains(author)) {
-                    mapAuthorsTot.get(rowDataset.getFile().getNameFile()).add(author);
-                }
-            }
-        });
-
-        rowDataset.setNumAuthTot(mapAuthorsTot.get(rowDataset.getFile().getNameFile()).size());
-    }
 }
