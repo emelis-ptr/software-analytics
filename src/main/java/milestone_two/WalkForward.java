@@ -3,14 +3,13 @@ package milestone_two;
 import entity.Result;
 import enums.Balancing;
 import enums.Classifier;
+import enums.CostSensitive;
 import enums.FeatureSelection;
-import enums.Sensitive;
 import milestone_one.MilestoneOne;
 import milestone_two.balancing.Oversampling;
 import milestone_two.balancing.Smote;
 import milestone_two.balancing.Undersampling;
 import milestone_two.feature_selection.BestFirst;
-import milestone_two.sensitive.CostSensitive;
 import util.Logger;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
@@ -179,7 +178,7 @@ public class WalkForward {
     }
 
     /**
-     * Sensitive
+     * CostSensitive
      *
      * @param classifier:         AbstractClassifier
      * @param filteredClassifier: FilteredClassifier
@@ -189,11 +188,11 @@ public class WalkForward {
      */
     private static void chooseSensitive(String[] models, AbstractClassifier classifier, FilteredClassifier filteredClassifier, Instances trainingSet, Instances testingSet, int indexRelease) {
 
-        for (Sensitive sensitive : Sensitive.values()) {
-            models[3] = sensitive.toString();
+        for (CostSensitive costSensitive : CostSensitive.values()) {
+            models[3] = costSensitive.toString();
 
             CostSensitiveClassifier costSensitiveClassifier = null;
-            switch (sensitive) {
+            switch (costSensitive) {
                 case NO_SENSITIVE: //No sensitive
                     break;
 
@@ -206,7 +205,7 @@ public class WalkForward {
                         costSensitiveClassifier.setClassifier(filteredClassifier);
                     }
                     costSensitiveClassifier.setMinimizeExpectedCost(true);
-                    costSensitiveClassifier.setCostMatrix(CostSensitive.createCostMatrix(1.0, 10.0));
+                    costSensitiveClassifier.setCostMatrix(milestone_two.cost_sensitive.CostSensitive.createCostMatrix(1.0, 10.0));
 
                     break;
 
@@ -219,7 +218,7 @@ public class WalkForward {
                         costSensitiveClassifier.setClassifier(filteredClassifier);
                     }
                     costSensitiveClassifier.setMinimizeExpectedCost(false);
-                    costSensitiveClassifier.setCostMatrix(CostSensitive.createCostMatrix(1.0, 10.0));
+                    costSensitiveClassifier.setCostMatrix(milestone_two.cost_sensitive.CostSensitive.createCostMatrix(1.0, 10.0));
 
                     break;
 
@@ -256,6 +255,10 @@ public class WalkForward {
                 eval.evaluateModel(costSensitiveClassifier, testingSet);
             }
             result.addValues(eval);
+
+            Logger.infoLog(models[0] + " - " + models[1] + " - " + models[2] + " - " + models[3] + "\n" +
+                    "Error rate = " + eval.errorRate() + "\n" +
+                    "Root mean squared error = " + eval.rootMeanSquaredError() + "\n");
         } catch (
                 Exception e) {
             Logger.errorLog("Error evaluation");

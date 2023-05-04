@@ -1,4 +1,4 @@
-package milestone_two.sensitive;
+package milestone_two.cost_sensitive;
 
 import weka.classifiers.CostMatrix;
 

@@ -33,7 +33,7 @@ public class MilestoneTwo {
     private static void evaluate(int totalReleases) {
         for (int i = 2; i < totalReleases + 1; i++) {
             try {
-                Instances[] instances = TrainingAndTestingSet.setTestingTraining(i);
+                Instances[] instances = TrainingAndTestingSet.getTestingTraining(i);
                 WalkForward.runWalkFarward(instances, i);
             } catch (Exception e) {
                 Logger.errorLog("Exception training and testing set");

@@ -3,7 +3,7 @@ package entity;
 import enums.Balancing;
 import enums.Classifier;
 import enums.FeatureSelection;
-import enums.Sensitive;
+import enums.CostSensitive;
 import weka.classifiers.Evaluation;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -14,7 +14,7 @@ public class Result {
     private Classifier classifierName;
     private Balancing resamplingMethodName;
     private FeatureSelection featureSelectionName;
-    private Sensitive costSensitivity;
+    private CostSensitive costSensitivity;
     private double tp;
     private double fp;
     private double tn;
@@ -31,7 +31,7 @@ public class Result {
         this.classifierName = Classifier.valueOf(classifierName);
         this.featureSelectionName = FeatureSelection.valueOf(featureSelectionName);
         this.resamplingMethodName = Balancing.valueOf(resamplingMethodName);
-        this.costSensitivity = Sensitive.valueOf(costSensitivity);
+        this.costSensitivity = CostSensitive.valueOf(costSensitivity);
     }
 
     public String getProjName() {
@@ -74,11 +74,11 @@ public class Result {
         this.featureSelectionName = featureSelectionName;
     }
 
-    public Sensitive getCostSensitivity() {
+    public CostSensitive getCostSensitivity() {
         return costSensitivity;
     }
 
-    public void setCostSensitivity(Sensitive costSensitivity) {
+    public void setCostSensitivity(CostSensitive costSensitivity) {
         this.costSensitivity = costSensitivity;
     }
 

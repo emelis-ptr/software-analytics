@@ -22,7 +22,7 @@ public class TrainingAndTestingSet {
      * @throws IOException:
      * @return:
      */
-    public static Instances[] setTestingTraining(int releaseIndex) throws Exception {
+    public static Instances[] getTestingTraining(int releaseIndex) throws Exception {
         ConverterUtils.DataSource sourceTraining = new ConverterUtils.DataSource(PATH_RESULTS_ARFF + MilestoneTwo.PROJ_NAME_M2 + DATASET_ARFF);
         Instances data = sourceTraining.getDataSet();
         // eliminimo l'attributo associato al nome del file
