@@ -8,10 +8,10 @@ public class File {
     private String nameFile;
     private Release release;
     private Commit commit;
-    private String oldNameFile;
     private LocalDate fileCreation;
     private int sizeLOC;
     private int age;
+    private boolean isRenamed;
 
     public File(String nameFile, Release release) {
         this.nameFile = nameFile;
@@ -42,14 +42,6 @@ public class File {
         this.commit = commit;
     }
 
-    public String getOldNameFile() {
-        return oldNameFile;
-    }
-
-    public void setOldNameFile(String oldNameFile) {
-        this.oldNameFile = oldNameFile;
-    }
-
     public LocalDate getFileCreation() {
         return fileCreation;
     }
@@ -67,7 +59,7 @@ public class File {
     }
 
     public int getAge() {
-        if(this.getFileCreation() != null) {
+        if (this.getFileCreation() != null) {
             int a = (int) this.getFileCreation().until(this.getRelease().getDateCreation(), ChronoUnit.WEEKS);
             this.setAge(a);
         } else {
@@ -80,16 +72,24 @@ public class File {
         this.age = age;
     }
 
+    public boolean isRenamed() {
+        return isRenamed;
+    }
+
+    public void setRenamed(boolean renamed) {
+        isRenamed = renamed;
+    }
+
     @Override
     public String toString() {
         return "File{" +
                 "nameFile='" + nameFile + '\'' +
-                ", release=" + release.getNumVersion() +
-                ", commit=" + commit.getRevCommit() +
-                ", oldNameFile='" + oldNameFile + '\'' +
+                ", release=" + release +
+                ", commit=" + commit +
                 ", fileCreation=" + fileCreation +
                 ", sizeLOC=" + sizeLOC +
                 ", age=" + age +
+                ", isRenamed=" + isRenamed +
                 '}';
     }
 }

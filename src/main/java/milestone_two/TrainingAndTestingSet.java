@@ -25,7 +25,8 @@ public class TrainingAndTestingSet {
     public static Instances[] setTestingTraining(int releaseIndex) throws Exception {
         ConverterUtils.DataSource sourceTraining = new ConverterUtils.DataSource(PATH_RESULTS_ARFF + MilestoneTwo.PROJ_NAME_M2 + DATASET_ARFF);
         Instances data = sourceTraining.getDataSet();
-
+        // eliminimo l'attributo associato al nome del file
+        data.deleteAttributeAt(1);
         Instances[] instances = new Instances[2];
 
         Instances trainingSet = new Instances(data, 0);
@@ -74,6 +75,23 @@ public class TrainingAndTestingSet {
             }
         }
         return totalReleases;
+    }
+
+    /**
+     * Determino il numero di instanze con la label true
+     *
+     * @param training: training set
+     * @return: numero di instanze true
+     */
+    public static int getNumInstancesTrue(Instances training) {
+        int numInstancesTrue = 0;
+        int buggyIndex = training.classIndex();
+        for (Instance instance : training) {
+            if (instance.stringValue(buggyIndex).equalsIgnoreCase("true")) {
+                numInstancesTrue = numInstancesTrue + 1;
+            }
+        }
+        return numInstancesTrue;
     }
 
     /**

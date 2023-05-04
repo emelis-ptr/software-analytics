@@ -1,9 +1,5 @@
 package milestone_two;
 
-import entity.Result;
-import enums.Balancing;
-import enums.Classifier;
-import enums.FeatureSelection;
 import enums.Project;
 import milestone_one.MilestoneOne;
 import util.Logger;
@@ -11,8 +7,6 @@ import util.WriteCSV;
 import weka.core.Instances;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MilestoneTwo {
     public static final String PROJ_NAME_M2 = String.valueOf(Project.BOOKKEEPER);
@@ -24,49 +18,26 @@ public class MilestoneTwo {
         int totalReleases = TrainingAndTestingSet.findTotalReleasesNumber();
         Logger.infoLog(" --> Numero di release: " + totalReleases);
 
-        ArrayList<Result> results = new ArrayList<>();
         Logger.infoLog(" --> Inizio valutazione metriche per la classificazione");
-        evaluate(totalReleases, results);
+        evaluate(totalReleases);
 
         Logger.infoLog(" --> Stampiamo su un file csv");
-        WriteCSV.writeEvaluation(results);
+        WriteCSV.writeEvaluation(WalkForward.results);
     }
 
     /**
      * Calcola le metriche per ogni classifier, resampling, feature selection
      *
      * @param totalReleases: numero totale delle release
-     * @param results:       lista dei risultati finali
      */
-    private static void evaluate(int totalReleases, List<Result> results) {
+    private static void evaluate(int totalReleases) {
         for (int i = 2; i < totalReleases + 1; i++) {
-            for (Classifier classifierName : Classifier.values()) {
-                for (Balancing resamplingMethodName : Balancing.values()) {
-                    for (FeatureSelection featureSelectionName : FeatureSelection.values()) {
-                        Logger.infoLog(" --> Consideriamo: " + classifierName + ", " + resamplingMethodName + ", "
-                                + featureSelectionName);
-                        Result result = new Result(classifierName, featureSelectionName, resamplingMethodName);
-                        result.setProjName(MilestoneOne.project(PROJ_NAME_M2));
-                        run(result, i);
-                        results.add(result);
-                    }
-                }
+            try {
+                Instances[] instances = TrainingAndTestingSet.setTestingTraining(i);
+                WalkForward.runWalkFarward(instances, i);
+            } catch (Exception e) {
+                Logger.errorLog("Exception training and testing set");
             }
-        }
-    }
-
-    /**
-     * Esegue la walk forward
-     *
-     * @param result: result
-     * @param i:      indice della release
-     */
-    private static void run(Result result, int i) {
-        try {
-            Instances[] instances = TrainingAndTestingSet.setTestingTraining(i);
-            WalkForward.runWalkFarward(result, instances, i);
-        } catch (Exception e) {
-            Logger.errorLog("Exception training and testing set");
         }
     }
 }

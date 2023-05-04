@@ -3,6 +3,7 @@ package entity;
 import enums.Balancing;
 import enums.Classifier;
 import enums.FeatureSelection;
+import enums.Sensitive;
 import weka.classifiers.Evaluation;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -13,7 +14,7 @@ public class Result {
     private Classifier classifierName;
     private Balancing resamplingMethodName;
     private FeatureSelection featureSelectionName;
-    private String costSensitivity;
+    private Sensitive costSensitivity;
     private double tp;
     private double fp;
     private double tn;
@@ -26,10 +27,11 @@ public class Result {
     private float percentageBuggyInTraining;
     private float percentageBuggyInTesting;
 
-    public Result(Classifier classifierName, FeatureSelection featureSelectionName, Balancing resamplingMethodName) {
-        this.classifierName = classifierName;
-        this.featureSelectionName = featureSelectionName;
-        this.resamplingMethodName = resamplingMethodName;
+    public Result(String classifierName, String featureSelectionName, String resamplingMethodName, String costSensitivity) {
+        this.classifierName = Classifier.valueOf(classifierName);
+        this.featureSelectionName = FeatureSelection.valueOf(featureSelectionName);
+        this.resamplingMethodName = Balancing.valueOf(resamplingMethodName);
+        this.costSensitivity = Sensitive.valueOf(costSensitivity);
     }
 
     public String getProjName() {
@@ -72,11 +74,11 @@ public class Result {
         this.featureSelectionName = featureSelectionName;
     }
 
-    public String getCostSensitivity() {
+    public Sensitive getCostSensitivity() {
         return costSensitivity;
     }
 
-    public void setCostSensitivity(String costSensitivity) {
+    public void setCostSensitivity(Sensitive costSensitivity) {
         this.costSensitivity = costSensitivity;
     }
 
@@ -204,10 +206,10 @@ public class Result {
     /**
      * Si aggiungono i valori di TP, FP, TN, FN, Precision, Recall, Auc e Kappa
      *
-     * @param eval:        Evaluation
+     * @param eval: Evaluation
      */
     public void addValues(Evaluation eval) {
-        int classIndex = 0;
+        int classIndex = 1;
         this.tp = eval.numTruePositives(classIndex);
         this.fp = eval.numFalsePositives(classIndex);
         this.tn = eval.numTrueNegatives(classIndex);

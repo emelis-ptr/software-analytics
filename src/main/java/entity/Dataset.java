@@ -8,20 +8,26 @@ public class Dataset implements Comparable<Dataset> {
     private File file;
     private int sizeLoc;
     private int locTouched;
-    private int locTouchedTot;
+    private int locTouchedFromR0;
     private int numR;
-    private int numRTot;
+    private int numRFromR0;
     private int numFix;
-    private int numFixTot;
+    private int numFixFromR0;
     private List<String> authors;
     private int numAuth;
-    private int numAuthTot;
+    private int numAuthFromR0;
     private int locAdded;
+    private int locAddedFromR0;
     private int maxLocAdded;
+    private int maxLocAddedFromR0;
     private float avgLocAdded;
+    private float avgLocAddedFromR0;
     private int churn;
+    private int churnFromR0;
     private int maxChurn;
+    private int maxChurnFromR0;
     private float avgChurn;
+    private float avgChurnFromR0;
     private int age;
     private double weightedAge;
     private boolean isBuggy;
@@ -68,12 +74,12 @@ public class Dataset implements Comparable<Dataset> {
         this.locTouched += locTouched;
     }
 
-    public int getLocTouchedTot() {
-        return locTouchedTot;
+    public int getLocTouchedFromR0() {
+        return locTouchedFromR0;
     }
 
-    public void setLocTouchedTot(int locTouchedTot) {
-        this.locTouchedTot = locTouchedTot;
+    public void setLocTouchedFromR0(int locTouchedFromR0) {
+        this.locTouchedFromR0 = locTouchedFromR0;
     }
 
     public int getNumR() {
@@ -84,12 +90,12 @@ public class Dataset implements Comparable<Dataset> {
         this.numR = numR;
     }
 
-    public int getNumRTot() {
-        return numRTot;
+    public int getNumRFromR0() {
+        return numRFromR0;
     }
 
-    public void setNumRTot(int numRTot) {
-        this.numRTot = numRTot;
+    public void setNumRFromR0(int numRFromR0) {
+        this.numRFromR0 = numRFromR0;
     }
 
     public int getNumFix() {
@@ -100,12 +106,12 @@ public class Dataset implements Comparable<Dataset> {
         this.numFix = numFix;
     }
 
-    public int getNumFixTot() {
-        return numFixTot;
+    public int getNumFixFromR0() {
+        return numFixFromR0;
     }
 
-    public void setNumFixTot(int numFixTot) {
-        this.numFixTot = numFixTot;
+    public void setNumFixFromR0(int numFixFromR0) {
+        this.numFixFromR0 = numFixFromR0;
     }
 
     public List<String> getAuthors() {
@@ -125,12 +131,12 @@ public class Dataset implements Comparable<Dataset> {
         this.numAuth = numAuth;
     }
 
-    public int getNumAuthTot() {
-        return numAuthTot;
+    public int getNumAuthFromR0() {
+        return numAuthFromR0;
     }
 
-    public void setNumAuthTot(int numAuthTot) {
-        this.numAuthTot = numAuthTot;
+    public void setNumAuthFromR0(int numAuthFromR0) {
+        this.numAuthFromR0 = numAuthFromR0;
     }
 
     public int getLocAdded() {
@@ -141,12 +147,28 @@ public class Dataset implements Comparable<Dataset> {
         this.locAdded += locAdded;
     }
 
+    public int getLocAddedFromR0() {
+        return locAddedFromR0;
+    }
+
+    public void setLocAddedFromR0(int locAddedFromR0) {
+        this.locAddedFromR0 = locAddedFromR0;
+    }
+
     public int getMaxLocAdded() {
         return maxLocAdded;
     }
 
     public void setMaxLocAdded(int maxLocAdded) {
         this.maxLocAdded = maxLocAdded;
+    }
+
+    public int getMaxLocAddedFromR0() {
+        return maxLocAddedFromR0;
+    }
+
+    public void setMaxLocAddedFromR0(int maxLocAddedFromR0) {
+        this.maxLocAddedFromR0 = maxLocAddedFromR0;
     }
 
     public float getAvgLocAdded() {
@@ -157,12 +179,28 @@ public class Dataset implements Comparable<Dataset> {
         this.avgLocAdded = avgLocAdded;
     }
 
+    public float getAvgLocAddedFromR0() {
+        return avgLocAddedFromR0;
+    }
+
+    public void setAvgLocAddedFromR0(float avgLocAddedFromR0) {
+        this.avgLocAddedFromR0 = avgLocAddedFromR0;
+    }
+
     public int getChurn() {
         return churn;
     }
 
     public void setChurn(int churn) {
         this.churn += churn;
+    }
+
+    public int getChurnFromR0() {
+        return churnFromR0;
+    }
+
+    public void setChurnFromR0(int churnFromR0) {
+        this.churnFromR0 = churnFromR0;
     }
 
     public int getMaxChurn() {
@@ -173,12 +211,28 @@ public class Dataset implements Comparable<Dataset> {
         this.maxChurn = maxChurn;
     }
 
+    public int getMaxChurnFromR0() {
+        return maxChurnFromR0;
+    }
+
+    public void setMaxChurnFromR0(int maxChurnFromR0) {
+        this.maxChurnFromR0 = maxChurnFromR0;
+    }
+
     public float getAvgChurn() {
         return avgChurn;
     }
 
     public void setAvgChurn(float avgChurn) {
         this.avgChurn = avgChurn;
+    }
+
+    public float getAvgChurnFromR0() {
+        return avgChurnFromR0;
+    }
+
+    public void setAvgChurnFromR0(float avgChurnFromR0) {
+        this.avgChurnFromR0 = avgChurnFromR0;
     }
 
     public int getAge() {
@@ -240,19 +294,26 @@ public class Dataset implements Comparable<Dataset> {
                 ", file=" + file.getNameFile() +
                 ", sizeLoc=" + sizeLoc +
                 ", locTouched=" + locTouched +
-                ", locTouchedTot=" + locTouchedTot +
+                ", locTouchedTot=" + locTouchedFromR0 +
                 ", numR=" + numR +
-                ", numRTot=" + numRTot +
+                ", numRTot=" + numRFromR0 +
                 ", numFix=" + numFix +
-                ", numFixTot=" + numFixTot +
+                ", numFixTot=" + numFixFromR0 +
+                ", authors=" + authors +
                 ", numAuth=" + numAuth +
-                ", numAuthTot=" + numAuthTot +
+                ", numAuthTot=" + numAuthFromR0 +
                 ", locAdded=" + locAdded +
+                ", locAddedTot=" + locAddedFromR0 +
                 ", maxLocAdded=" + maxLocAdded +
+                ", maxLocAddedTot=" + maxLocAddedFromR0 +
                 ", avgLocAdded=" + avgLocAdded +
+                ", avgLocAddedTot=" + avgLocAddedFromR0 +
                 ", churn=" + churn +
+                ", churnTot=" + churnFromR0 +
                 ", maxChurn=" + maxChurn +
+                ", maxChurnTot=" + maxChurnFromR0 +
                 ", avgChurn=" + avgChurn +
+                ", avgChurnTot=" + avgChurnFromR0 +
                 ", age=" + age +
                 ", weightedAge=" + weightedAge +
                 ", isBuggy=" + isBuggy +

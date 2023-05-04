@@ -62,11 +62,13 @@ public class Metric {
      */
     public static void determineDefectiveClass(Dataset rowDataset, Commit commit, DiffEntry entry) {
         if ((entry.getChangeType().equals(DiffEntry.ChangeType.MODIFY) || entry.getChangeType().equals(DiffEntry.ChangeType.DELETE)) && entry.getNewPath().endsWith(JAVA_EXT)) {
-            rowDataset.getFile().setOldNameFile(entry.getOldPath());
             TicketJira ticketJira = commit.getTicket();
             if (commit.getTicket() != null && !ticketJira.getInjectedVersion().equals(ticketJira.getFixedVersion()) && (rowDataset.getRelease().getNumVersion().equals(ticketJira.getInjectedVersion().getNumVersion()))) {
                 rowDataset.setBuggy(true);
             }
+        }
+        if (entry.getChangeType().equals(DiffEntry.ChangeType.RENAME)) {
+            rowDataset.getFile().setRenamed(true);
         }
     }
 
@@ -185,10 +187,18 @@ public class Metric {
                     authors.add(a);
                 }
             }));
-            rowDataset.setNumAuthTot(authors.size());
-            rowDataset.setLocTouchedTot(filtered.stream().mapToInt(Dataset::getLocTouched).sum());
-            rowDataset.setNumFixTot(filtered.stream().mapToInt(Dataset::getNumFix).sum());
-            rowDataset.setNumRTot(filtered.stream().mapToInt(Dataset::getNumR).sum());
+
+            rowDataset.setNumAuthFromR0(authors.size());
+            rowDataset.setLocTouchedFromR0(filtered.stream().mapToInt(Dataset::getLocTouched).sum());
+            rowDataset.setNumFixFromR0(filtered.stream().mapToInt(Dataset::getNumFix).sum());
+            rowDataset.setNumRFromR0(filtered.stream().mapToInt(Dataset::getNumR).sum());
+            rowDataset.setNumRFromR0(filtered.stream().mapToInt(Dataset::getNumR).sum());
+            rowDataset.setLocAddedFromR0(filtered.stream().mapToInt(Dataset::getLocAdded).sum());
+            rowDataset.setMaxLocAddedFromR0((int) filtered.stream().mapToDouble(Dataset::getMaxLocAdded).summaryStatistics().getMax());
+            rowDataset.setAvgLocAddedFromR0((float) filtered.stream().mapToDouble(Dataset::getAvgLocAdded).summaryStatistics().getAverage());
+            rowDataset.setChurnFromR0(filtered.stream().mapToInt(Dataset::getChurn).sum());
+            rowDataset.setMaxChurnFromR0((int) filtered.stream().mapToDouble(Dataset::getMaxChurn).summaryStatistics().getMax());
+            rowDataset.setAvgChurnFromR0((float) filtered.stream().mapToDouble(Dataset::getAvgChurn).summaryStatistics().getAverage());
         });
 
     }
