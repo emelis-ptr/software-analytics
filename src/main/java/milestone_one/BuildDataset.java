@@ -90,7 +90,8 @@ public class BuildDataset {
         //diffFormatter trova le differenze da i tree di due commit (ovvero tra i file)
         DiffFormatter diffFormatter = new DiffFormatter(NullOutputStream.INSTANCE);
         diffFormatter.setRepository(GitHandler.repository(MilestoneOne.path()));
-
+        diffFormatter.setDetectRenames(true);
+        
         mapReleaseCommits.forEach((key, value1) -> value1.forEach(commit -> {
             RevCommit revCommit = commit.getRevCommit();
             RevCommit previousCommit = revCommit.getParentCount() > 0 ? revCommit.getParent(0) : null;

@@ -217,11 +217,13 @@ public class WriteCSV {
         String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M1) + "/" + MilestoneOne.project(PROJ_NAME_M1) + "-Files.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
-            fileWriter.append("File name;Release;Commit;SizeLOC;Age;isRenamed");
+            fileWriter.append("File name;OldNameFile;Release;Commit;SizeLOC;Age;isRenamed");
             fileWriter.append("\n");
 
             for (File file : files) {
                 fileWriter.append(file.getNameFile());
+                fileWriter.append(";");
+                fileWriter.append(file.getOldNameFile());
                 fileWriter.append(";");
                 fileWriter.append(file.getRelease().getNumVersion().toString());
                 fileWriter.append(";");

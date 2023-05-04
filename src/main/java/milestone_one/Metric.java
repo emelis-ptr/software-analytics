@@ -69,6 +69,7 @@ public class Metric {
         }
         if (entry.getChangeType().equals(DiffEntry.ChangeType.RENAME)) {
             rowDataset.getFile().setRenamed(true);
+            rowDataset.getFile().setOldNameFile(entry.getOldPath());
         }
     }
 
@@ -171,6 +172,11 @@ public class Metric {
         }
     }
 
+    /**
+     * Calcoliamo le metriche a partire dalla release 0 fino alla release corrente
+     *
+     * @param dataset: dataset
+     */
     public static void determineMetricsUntilRelease(List<Dataset> dataset) {
         Map<String, List<Date>> mapCreationDate = new HashMap<>();
 
@@ -180,6 +186,12 @@ public class Metric {
                             rowDataset1.getFile().getNameFile().equals(rowDataset.getFile().getNameFile())
                                     && rowDataset1.getRelease().getNumVersion() <= rowDataset.getRelease().getNumVersion())
                     .toList();
+
+            // elimino i file che sono stati rinominati dopo quella versione
+            if (rowDataset.getFile().isRenamed()) {
+                filtered.stream().filter(rowDataset1 -> rowDataset1.getRelease().getNumVersion() > rowDataset.getRelease().getNumVersion())
+                        .forEach(dataset::remove);
+            }
 
             findFileCreation(rowDataset, mapCreationDate);
             filtered.forEach(f -> f.getAuthors().forEach(a -> {
@@ -200,7 +212,6 @@ public class Metric {
             rowDataset.setMaxChurnFromR0((int) filtered.stream().mapToDouble(Dataset::getMaxChurn).summaryStatistics().getMax());
             rowDataset.setAvgChurnFromR0((float) filtered.stream().mapToDouble(Dataset::getAvgChurn).summaryStatistics().getAverage());
         });
-
     }
 
 

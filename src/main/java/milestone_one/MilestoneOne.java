@@ -33,6 +33,7 @@ public class MilestoneOne {
             Logger.infoLog(" --> Determiniamo i ticket che sono menzionati nel commit del progetto");
             List<Ticket> tickets = RetrieveTicketGit.retrieveTicketGit(commits);
             Logger.infoLog("*** Ticket *** \n" + "Numero di ticket: " + tickets.size() + "\n");
+            Logger.infoLog("Numero di Ticket non presenti su Git: " + (ticketJiras.size() - tickets.size()) + "\n");
 
             Logger.infoLog(" --> Determiniamo IV attraverso il metodo proportion");
             Proportion.proportion(ticketJiras, tickets, releases);

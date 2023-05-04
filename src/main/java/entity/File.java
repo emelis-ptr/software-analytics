@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 public class File {
 
     private String nameFile;
+    private String oldNameFile;
     private Release release;
     private Commit commit;
     private LocalDate fileCreation;
@@ -24,6 +25,14 @@ public class File {
 
     public void setNameFile(String nameFile) {
         this.nameFile = nameFile;
+    }
+
+    public String getOldNameFile() {
+        return oldNameFile;
+    }
+
+    public void setOldNameFile(String oldNameFile) {
+        this.oldNameFile = oldNameFile;
     }
 
     public Release getRelease() {
