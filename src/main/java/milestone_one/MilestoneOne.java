@@ -10,6 +10,7 @@ import util.WriteCSV;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 public class MilestoneOne {
     public static final String PROJ_NAME_M1 = String.valueOf(Project.BOOKKEEPER);
@@ -38,15 +39,20 @@ public class MilestoneOne {
             Logger.infoLog(" --> Determiniamo IV attraverso il metodo proportion");
             Proportion.proportion(ticketJiras, tickets, releases);
 
-            Logger.infoLog(" --> Costruiamo il dataset");
-            List<Dataset> datasets = BuildDataset.buildDataset(commits, halfRelease, releases);
-            Logger.infoLog("*** Dataset *** \n" + "Dimensione del dataset: " + datasets.size() + "\n");
+            Logger.infoLog(" --> Recuperiamo i file dal repository");
+            Map<Release, List<Commit>> mapReleaseCommits = ReleaseCommits.mapReleaseCommits(commits, halfRelease);
+            List<Dataset> dataset = BuildDataset.buildDataset(mapReleaseCommits);
+            Logger.infoLog("*** Dataset *** \n" + "Dimensione del dataset: " + dataset.size() + "\n");
+
+            Logger.infoLog(" --> Si aggiungono le release mancanti al dataset");
+            BuildDataset.addFilesToEmptyRelease(mapReleaseCommits, releases, dataset, halfRelease);
+
+            Logger.infoLog(" --> Si trovano i file che sono stati toccati da un ticket e calcolo delle metriche");
+            BuildDataset.findClassTouched(dataset, mapReleaseCommits);
 
             Logger.infoLog(" --> Stampiamo su un file csv");
-            WriteCSV.writeDataset(datasets);
-            WriteCSV.writeCommit(commits);
+            WriteCSV.writeDataset(dataset);
             WriteCSV.writeTicketJira(ticketJiras);
-            WriteCSV.writeTicket(tickets);
         } catch (IOException | ParseException | GitAPIException e) {
             Logger.errorLog("Exception MilestoneOne");
         }

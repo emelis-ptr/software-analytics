@@ -13,6 +13,8 @@ public class File {
     private int sizeLOC;
     private int age;
     private boolean isRenamed;
+    private boolean isTouched;
+    private boolean isModified;
 
     public File(String nameFile, Release release) {
         this.nameFile = nameFile;
@@ -89,6 +91,22 @@ public class File {
         isRenamed = renamed;
     }
 
+    public boolean isTouched() {
+        return isTouched;
+    }
+
+    public void setTouched(boolean touched) {
+        isTouched = touched;
+    }
+
+    public boolean isModified() {
+        return isModified;
+    }
+
+    public void setModified(boolean modified) {
+        isModified = modified;
+    }
+
     @Override
     public String toString() {
         return "File{" +
@@ -99,6 +117,8 @@ public class File {
                 ", sizeLOC=" + sizeLOC +
                 ", age=" + age +
                 ", isRenamed=" + isRenamed +
+                ", isTouched=" + isTouched +
+                ", isModified=" + isModified +
                 '}';
     }
 }

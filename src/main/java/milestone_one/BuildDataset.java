@@ -12,7 +12,6 @@ import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.util.io.NullOutputStream;
 import util.GitHandler;
 import util.Logger;
-import util.WriteCSV;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,20 +26,13 @@ public class BuildDataset {
     private BuildDataset() {
     }
 
-    private static final List<Dataset> dataset = new ArrayList<>();
-
     /**
      * Determina tutti i file per ogni ultimo commit di ogni release
      *
-     * @param commits:     lista dei commit
-     * @param halfRelease: metà delle release
-     * @param releases:    lista delle release
-     * @throws IOException:
      * @return: dataset
      */
-    public static List<Dataset> buildDataset(List<Commit> commits, int halfRelease, List<Release> releases) throws IOException {
-        Map<Release, List<Commit>> mapReleaseCommits = ReleaseCommits.mapReleaseCommits(commits, halfRelease);
-        List<File> files = new ArrayList<>();
+    public static List<Dataset> buildDataset(Map<Release, List<Commit>> mapReleaseCommits) {
+        List<Dataset> dataset = new ArrayList<>();
         TreeWalk treeWalk = GitHandler.treeWalk();
 
         mapReleaseCommits.forEach((k, v) -> {
@@ -55,8 +47,6 @@ public class BuildDataset {
                     if (treeWalk.getPathString().endsWith(JAVA_EXT)) {
                         String nameFile = treeWalk.getPathString();
                         file = new File(nameFile, k);
-                        files.add(file);
-
                         file.setSizeLOC(Metric.calculateSize(treeWalk));
                         file.setCommit(commit);
 
@@ -68,15 +58,6 @@ public class BuildDataset {
                 Logger.errorLog("Errore nell'albero del commit");
             }
         });
-
-        // si aggiungono le release mancanti con i file
-        addFilesToEmptyRelease(mapReleaseCommits, releases, files, halfRelease);
-        // si trovano i file che sono stati toccati
-        findClassTouched(mapReleaseCommits);
-        // si trova il primo commit associato al file per determinare la sua data di creazione
-        Metric.determineMetricsUntilRelease(dataset);
-
-        WriteCSV.writeFile(files);
         return dataset;
     }
 
@@ -84,14 +65,15 @@ public class BuildDataset {
      * Controlla se ci sono delle differenze nell'albero del commit e inserisce le metriche di ogni file
      *
      * @param mapReleaseCommits: map con chiave-valore. key: release; value: list commit
+     * @param dataset:           dataset
      * @throws IOException:
      */
-    private static void findClassTouched(Map<Release, List<Commit>> mapReleaseCommits) throws IOException {
+    public static void findClassTouched(List<Dataset> dataset, Map<Release, List<Commit>> mapReleaseCommits) throws IOException {
         //diffFormatter trova le differenze da i tree di due commit (ovvero tra i file)
         DiffFormatter diffFormatter = new DiffFormatter(NullOutputStream.INSTANCE);
         diffFormatter.setRepository(GitHandler.repository(MilestoneOne.path()));
         diffFormatter.setDetectRenames(true);
-        
+
         mapReleaseCommits.forEach((key, value1) -> value1.forEach(commit -> {
             RevCommit revCommit = commit.getRevCommit();
             RevCommit previousCommit = revCommit.getParentCount() > 0 ? revCommit.getParent(0) : null;
@@ -100,7 +82,7 @@ public class BuildDataset {
                 //diffFormatter restituisce una lista dei path dei file che sono differenti tra i due commit
                 try {
                     for (DiffEntry entry : diffFormatter.scan(previousCommit, revCommit)) {
-                        Metric.setMetrics(dataset, commit, entry, diffFormatter, key.getNumVersion());
+                        Metric.calculateMetrics(dataset, commit, entry, diffFormatter, key.getNumVersion());
                     }
                 } catch (IOException e) {
                     Logger.errorLog("Errore in DiffFormatter");
@@ -115,21 +97,21 @@ public class BuildDataset {
      *
      * @param mapReleaseCommits: map con chiave-valore. key: release; value: list commit
      * @param releases:          lista delle release
-     * @param files:             lista dei file
+     * @param dataset:           dataset
      * @param halfRelease:       release da considerare
      */
-    public static void addFilesToEmptyRelease(Map<Release, List<Commit>> mapReleaseCommits, List<Release> releases, List<File> files, int halfRelease) {
+    public static void addFilesToEmptyRelease(Map<Release, List<Commit>> mapReleaseCommits, List<Release> releases, List<Dataset> dataset, int halfRelease) {
         // determina release mancante e aggiunge la lista dei commit della release precedente
         releases.forEach(release -> {
             if (release.getNumVersion() < halfRelease && (!mapReleaseCommits.containsKey(release))) {
-                files.stream()
-                        .filter(file -> file.getRelease().equals(releases.get(release.getNumVersion() - 2)))
-                        .forEach(file -> {
-                            File newFile = new File(file.getNameFile(), release);
-                            newFile.setSizeLOC(file.getSizeLOC());
-                            dataset.add(new Dataset(newFile));
-                        });
+                List<Dataset> datasetFiltered = dataset.stream()
+                        .filter(rowDataset -> rowDataset.getRelease().equals(releases.get(release.getNumVersion() - 2))).toList();
 
+                datasetFiltered.forEach(rowDataset -> {
+                    File newFile = new File(rowDataset.getFile().getNameFile(), release);
+                    newFile.setSizeLOC(rowDataset.getFile().getSizeLOC());
+                    dataset.add(new Dataset(newFile));
+                });
             }
         });
         Collections.sort(dataset);

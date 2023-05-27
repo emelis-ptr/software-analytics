@@ -5,6 +5,7 @@ import entity.Ticket;
 import entity.TicketJira;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Proportion {
@@ -24,20 +25,23 @@ public class Proportion {
     public static void proportion(List<TicketJira> ticketJiras, List<Ticket> tickets, List<Release> releases) {
         tickets.forEach(ticket -> setFV(ticket, releases));
 
-        ticketJiras.forEach(ticketJira -> {
-            if (ticketJira.getFixedVersion() == null) {
-                RetrieveTicketsJira.setFV(ticketJira, releases);
-            }
-            if (ticketJira.getInjectedVersion() != null) {
-                calculateP(releases, ticketJira);
-            } else {
-                calculateIV(releases, ticketJira);
-            }
-        });
+        ticketJiras.stream()
+                //ordiniamo in base alla data di creazione della FV
+                .sorted(Comparator.comparing(TicketJira::getResolutionDate))
+                .forEach(ticketJira -> {
+                    if (ticketJira.getFixedVersion() == null) {
+                        RetrieveTicketsJira.setFV(ticketJira, releases);
+                    }
+                    if (ticketJira.getInjectedVersion() != null) {
+                        calculateP(ticketJira);
+                    } else {
+                        calculateIV(releases, ticketJira);
+                    }
+                });
     }
 
     /***
-     * Per ogni Ticket sostituisce FV se l'ultima data del commit in git è uguale
+     * Per ogni Ticket inserisce FV se l'ultima data del commit in git è uguale
      * o avviene dopo la data di release
      *
      * @param ticket: ticket
@@ -55,33 +59,21 @@ public class Proportion {
     /**
      * Calcola proportion se il tickets ha IV
      *
-     * @param releases:   lista delle release
      * @param ticketJira: ticket presente su Jira
      */
-    private static void calculateP(List<Release> releases, TicketJira ticketJira) {
+    private static void calculateP(TicketJira ticketJira) {
         int p;
-        int ivCount = 0;
-        int fvCount = 0;
-        int ovCount = 0;
-        int count = 1;
+        int ivCount = ticketJira.getInjectedVersion().getNumVersion();
+        int fvCount = ticketJira.getFixedVersion().getNumVersion();
+        int ovCount = ticketJira.getOpeningVersion().getNumVersion();
 
-        // per ogni release conta gli IV, OV e FV
-        for (Release release : releases) {
-            if (release.getReleaseID().equals(ticketJira.getInjectedVersion().getReleaseID())) {
-                ivCount = count;
-            }
-            if (release.getReleaseID().equals(ticketJira.getOpeningVersion().getReleaseID())) {
-                ovCount = count;
-            }
-            if (release.getReleaseID().equals(ticketJira.getFixedVersion().getReleaseID())) {
-                fvCount = count;
-            }
-            count++;
-        }
         // se OV è diverso da FV allora calcola p
         if (ovCount != fvCount) {
             p = (fvCount - ivCount) / (fvCount - ovCount);
             proportions.add(p);
+        } else {
+            // se OV = FV allora P= (FV-IV)/(OV-IV) = 1
+            proportions.add(1);
         }
     }
 
@@ -93,34 +85,22 @@ public class Proportion {
      */
     private static void calculateIV(List<Release> releases, TicketJira ticketJira) {
         int ivNumber;
-        int fvNumber = 0;
-        int ovNumber = 0;
+        int fvNumber = ticketJira.getFixedVersion().getNumVersion();
+        int ovNumber = ticketJira.getOpeningVersion().getNumVersion();
         int pMeanValue = 0;
 
-        int count = 1;
-        // per ogni release conta il numero di OV, FV
-        for (Release release : releases) {
-            if (release.getReleaseID().equals(ticketJira.getOpeningVersion().getReleaseID())) {
-                ovNumber = count;
-            }
-            if (release.getReleaseID().equals(ticketJira.getFixedVersion().getReleaseID())) {
-                fvNumber = count;
-            }
-            count++;
-        }
         int sumP = 0;
-
         // si sommano tutti i valori della lista proportions
         for (Integer proportion : proportions) {
             sumP += proportion;
         }
-
         // si calcola il valore medio di p per stimare la IV
         if (!proportions.isEmpty()) {
             pMeanValue = sumP / proportions.size();
         }
+
         // se FV è diverso dalla OV si calcola IV
-        if (!ticketJira.getFixedVersion().getDateCreation().isEqual(ticketJira.getOpeningVersion().getDateCreation())) {
+        if (fvNumber != ovNumber) {
             ivNumber = fvNumber - ((fvNumber - ovNumber) * pMeanValue);
             // non possiamo assegnare un numero di versione negativo, quindi nel caso in cui
             // IV risulta essere minore di 0 si assegna a ivNumber il valore 1

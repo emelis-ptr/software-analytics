@@ -26,8 +26,11 @@ public class Metric {
     private Metric() {
     }
 
+    private static final Map<String, List<Date>> mapCreationDate = new HashMap<>();
+
+
     /**
-     * Calcolo delle metriche
+     * Calcolo metriche
      *
      * @param dataset:       dataset
      * @param commit:        commit
@@ -35,37 +38,38 @@ public class Metric {
      * @param diffFormatter: DiffFormatter
      * @param numRelease:    release corrente
      */
-    public static void setMetrics(List<Dataset> dataset, Commit commit, DiffEntry entry, DiffFormatter diffFormatter, Integer numRelease) {
+    public static void calculateMetrics(List<Dataset> dataset, Commit commit, DiffEntry entry, DiffFormatter diffFormatter, Integer numRelease) {
         dataset.stream().filter(d -> d.getRelease().getNumVersion().equals(numRelease)).forEach(rowDataset -> {
             if (rowDataset.getFile().getNameFile().equals(entry.getNewPath())) {
-                determineDefectiveClass(rowDataset, commit, entry);
-                try {
-                    calculateLocMetrics(entry, diffFormatter, rowDataset);
-                } catch (IOException e) {
-                    Logger.errorLog("Errore nel calcolo dei LOC");
+                TicketJira ticketJira = commit.getTicket();
+                if (ticketJira != null && (rowDataset.getFile().isTouched()
+                        && rowDataset.getRelease().getNumVersion().equals(ticketJira.getInjectedVersion().getNumVersion()))) {
+                    rowDataset.setBuggy(true);
                 }
+                determineModifiedFiles(rowDataset, commit, entry);
+                calculateLocMetrics(entry, diffFormatter, rowDataset);
                 calculateNumFix(commit, rowDataset);
                 rowDataset.setNumR(rowDataset.getNumR() + 1);
                 rowDataset.addAuthors(commit.getAuthor());
+                findFileCreation(rowDataset);
             }
         });
-
     }
 
     /**
      * Se ci sono delle differenze nell'albero del commit e se il file trovato in precedenza nel dataset
      * è uguale al fine in DiffEntry allora viene settato come true per definire che è buggy
      *
-     * @param rowDataset: record corrente del dataset
+     * @param rowDataset: record del dataset
      * @param commit:     commit
      * @param entry:      DiffEntry
      */
-    public static void determineDefectiveClass(Dataset rowDataset, Commit commit, DiffEntry entry) {
+    public static void determineModifiedFiles(Dataset rowDataset, Commit commit, DiffEntry entry) {
+        if (commit.getTicket() != null) {
+            rowDataset.getFile().setTouched(true);
+        }
         if ((entry.getChangeType().equals(DiffEntry.ChangeType.MODIFY) || entry.getChangeType().equals(DiffEntry.ChangeType.DELETE)) && entry.getNewPath().endsWith(JAVA_EXT)) {
-            TicketJira ticketJira = commit.getTicket();
-            if (commit.getTicket() != null && !ticketJira.getInjectedVersion().equals(ticketJira.getFixedVersion()) && (rowDataset.getRelease().getNumVersion().equals(ticketJira.getInjectedVersion().getNumVersion()))) {
-                rowDataset.setBuggy(true);
-            }
+            rowDataset.getFile().setModified(true);
         }
         if (entry.getChangeType().equals(DiffEntry.ChangeType.RENAME)) {
             rowDataset.getFile().setRenamed(true);
@@ -80,9 +84,8 @@ public class Metric {
      * @param entry:         un valore che rappresenta un cambiamento al file tramite DiffEntry
      * @param diffFormatter: DiffFormatter
      * @param rowDataset:    row corrente del dataset
-     * @throws IOException :
      */
-    public static void calculateLocMetrics(DiffEntry entry, DiffFormatter diffFormatter, Dataset rowDataset) throws IOException {
+    public static void calculateLocMetrics(DiffEntry entry, DiffFormatter diffFormatter, Dataset rowDataset) {
         int locTouched;
         int locAdded = 0;
         int locDeleted = 0;
@@ -94,21 +97,25 @@ public class Metric {
         ArrayList<Integer> locAddedList = new ArrayList<>();
         ArrayList<Integer> churnList = new ArrayList<>();
 
-        for (Edit edit : diffFormatter.toFileHeader(entry).toEditList()) {
-            // LOC aggiunte
-            if (edit.getType().equals(Edit.Type.INSERT)) {
-                locAddedOnce = edit.getEndB() - edit.getBeginB();
-                locAdded += edit.getEndB() - edit.getBeginB();
-                locAddedList.add(locAddedOnce);
-                // LOC cancellate
-            } else if (edit.getType().equals(Edit.Type.DELETE)) {
-                locDeleted += edit.getEndA() - edit.getBeginA();
-                // LOC modificate
-            } else if (edit.getType().equals(Edit.Type.REPLACE)) {
-                locReplaced += edit.getEndB() - edit.getBeginB();
+        try {
+            for (Edit edit : diffFormatter.toFileHeader(entry).toEditList()) {
+                // LOC aggiunte
+                if (edit.getType().equals(Edit.Type.INSERT)) {
+                    locAddedOnce = edit.getEndB() - edit.getBeginB();
+                    locAdded += edit.getEndB() - edit.getBeginB();
+                    locAddedList.add(locAddedOnce);
+                    // LOC cancellate
+                } else if (edit.getType().equals(Edit.Type.DELETE)) {
+                    locDeleted += edit.getEndA() - edit.getBeginA();
+                    // LOC modificate
+                } else if (edit.getType().equals(Edit.Type.REPLACE)) {
+                    locReplaced += edit.getEndB() - edit.getBeginB();
+                }
+                churnOnce = locAdded - locDeleted;
+                churnList.add(churnOnce);
             }
-            churnOnce = locAdded - locDeleted;
-            churnList.add(churnOnce);
+        } catch (IOException e) {
+            Logger.errorLog("Errore calcolo LOC");
         }
 
         //LOC
@@ -173,56 +180,11 @@ public class Metric {
     }
 
     /**
-     * Calcoliamo le metriche a partire dalla release 0 fino alla release corrente
-     *
-     * @param dataset: dataset
-     */
-    public static void determineMetricsUntilRelease(List<Dataset> dataset) {
-        Map<String, List<Date>> mapCreationDate = new HashMap<>();
-
-        dataset.forEach(rowDataset -> {
-            List<String> authors = new ArrayList<>();
-            List<Dataset> filtered = dataset.stream().filter(rowDataset1 ->
-                            rowDataset1.getFile().getNameFile().equals(rowDataset.getFile().getNameFile())
-                                    && rowDataset1.getRelease().getNumVersion() <= rowDataset.getRelease().getNumVersion())
-                    .toList();
-
-            // elimino i file che sono stati rinominati dopo quella versione
-            if (rowDataset.getFile().isRenamed()) {
-                filtered.stream().filter(rowDataset1 -> rowDataset1.getRelease().getNumVersion() > rowDataset.getRelease().getNumVersion())
-                        .forEach(dataset::remove);
-            }
-
-            findFileCreation(rowDataset, mapCreationDate);
-            filtered.forEach(f -> f.getAuthors().forEach(a -> {
-                if (!authors.contains(a)) {
-                    authors.add(a);
-                }
-            }));
-
-            rowDataset.setNumAuthFromR0(authors.size());
-            rowDataset.setLocTouchedFromR0(filtered.stream().mapToInt(Dataset::getLocTouched).sum());
-            rowDataset.setNumFixFromR0(filtered.stream().mapToInt(Dataset::getNumFix).sum());
-            rowDataset.setNumRFromR0(filtered.stream().mapToInt(Dataset::getNumR).sum());
-            rowDataset.setNumRFromR0(filtered.stream().mapToInt(Dataset::getNumR).sum());
-            rowDataset.setLocAddedFromR0(filtered.stream().mapToInt(Dataset::getLocAdded).sum());
-            rowDataset.setMaxLocAddedFromR0((int) filtered.stream().mapToDouble(Dataset::getMaxLocAdded).summaryStatistics().getMax());
-            rowDataset.setAvgLocAddedFromR0((float) filtered.stream().mapToDouble(Dataset::getAvgLocAdded).summaryStatistics().getAverage());
-            rowDataset.setChurnFromR0(filtered.stream().mapToInt(Dataset::getChurn).sum());
-            rowDataset.setMaxChurnFromR0((int) filtered.stream().mapToDouble(Dataset::getMaxChurn).summaryStatistics().getMax());
-            rowDataset.setAvgChurnFromR0((float) filtered.stream().mapToDouble(Dataset::getAvgChurn).summaryStatistics().getAverage());
-        });
-    }
-
-
-    /**
      * Trova la data di creazione del file
      *
      * @param rowDataset:      record del dataset
-     * @param mapCreationDate: map Map<String, List<Date>>, con chiave: nome file
-     *                         e valore: lista delle date dei commit associate a quel file
      */
-    private static void findFileCreation(Dataset rowDataset, Map<String, List<Date>> mapCreationDate) {
+    private static void findFileCreation(Dataset rowDataset) {
         String nameFile = rowDataset.getFile().getNameFile();
         List<Date> commitsDate = new ArrayList<>();
         try {

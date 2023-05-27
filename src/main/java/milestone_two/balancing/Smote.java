@@ -36,6 +36,7 @@ public class Smote {
                 parameter = ((double) numInstancesTrue - (double) numInstancesFalse) / numInstancesFalse * 100.0;
             }
 
+            // "-P": percentuale di instanze Smote da creare
             String[] opts = new String[]{"-P", String.valueOf(parameter)};
             smote.setOptions(opts);
             smote.setInputFormat(training);

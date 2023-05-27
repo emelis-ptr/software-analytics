@@ -61,13 +61,18 @@ public class WriteCSV {
                 fileWriter.append(";");
                 fileWriter.append(ticketJira.getResolutionDate().toString());
                 fileWriter.append(";");
-                fileWriter.append(ticketJira.getInjectedVersion().getNumVersion().toString());
+                if (ticketJira.getInjectedVersion() != null) {
+                    fileWriter.append(ticketJira.getInjectedVersion().getNumVersion().toString());
+                }
                 fileWriter.append(";");
-                fileWriter.append(ticketJira.getOpeningVersion().getNumVersion().toString());
+                if (ticketJira.getOpeningVersion() != null) {
+                    fileWriter.append(ticketJira.getOpeningVersion().getNumVersion().toString());
+                }
                 fileWriter.append(";");
-                fileWriter.append(ticketJira.getFixedVersion().getNumVersion().toString());
+                if (ticketJira.getFixedVersion() != null) {
+                    fileWriter.append(ticketJira.getFixedVersion().getNumVersion().toString());
+                }
                 fileWriter.append(";");
-
                 if (ticketJira.getAffectedVersion() != null) {
                     for (Release av : ticketJira.getAffectedVersion()) {
                         fileWriter.append(av.getNumVersion().toString()).append(" - ");
@@ -100,25 +105,25 @@ public class WriteCSV {
                 fileWriter.append(",");
                 fileWriter.append(String.valueOf(rowDataset.getSizeLoc()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getLocTouchedFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getLocTouched()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getNumRFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getNumR()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getNumFixFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getNumFix()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getNumAuthFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getNumAuth()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getLocAddedFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getLocAdded()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getAvgLocAddedFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getAvgLocAdded()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getMaxLocAddedFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getMaxLocAdded()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getChurnFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getChurn()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getMaxChurnFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getMaxChurn()));
                 fileWriter.append(",");
-                fileWriter.append(String.valueOf(rowDataset.getAvgChurnFromR0()));
+                fileWriter.append(String.valueOf(rowDataset.getAvgChurn()));
                 fileWriter.append(",");
                 fileWriter.append(String.valueOf(rowDataset.getAge()));
                 fileWriter.append(",");
@@ -234,6 +239,18 @@ public class WriteCSV {
                 fileWriter.append(String.valueOf(file.getAge()));
                 fileWriter.append(";");
                 if (file.isRenamed()) {
+                    fileWriter.append("yes");
+                } else {
+                    fileWriter.append("no");
+                }
+                fileWriter.append(";");
+                if (file.isTouched()) {
+                    fileWriter.append("yes");
+                } else {
+                    fileWriter.append("no");
+                }
+                fileWriter.append(";");
+                if (file.isModified()) {
                     fileWriter.append("yes");
                 } else {
                     fileWriter.append("no");

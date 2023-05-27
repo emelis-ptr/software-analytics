@@ -97,8 +97,6 @@ public class RetrieveTicketsJira {
             if (ticketJira.getCreationDate().equals(release.getDateCreation()) || release.getDateCreation().isAfter(ticketJira.getCreationDate())) {
                 ticketJira.setOpeningVersion(release);
                 break;
-            } else {
-                ticketJira.setOpeningVersion(releases.get(releases.size() - 1));
             }
         }
     }
@@ -115,8 +113,6 @@ public class RetrieveTicketsJira {
             if (ticketJira.getResolutionDate().equals(release.getDateCreation()) || release.getDateCreation().isAfter(ticketJira.getResolutionDate())) {
                 ticketJira.setFixedVersion(release);
                 break;
-            } else {
-                ticketJira.setFixedVersion(releases.get(releases.size() - 1));
             }
         }
     }
@@ -133,14 +129,12 @@ public class RetrieveTicketsJira {
         List<Release> releaseAV = new ArrayList<>();
         if (!listAV.isEmpty()) {
             //Inserisco le affected versions
-            for (String affectedVersion : listAV) {
-                for (Release release : releases) {
-                    if (release.getReleaseID().equals(affectedVersion)) {
+            listAV.forEach(av -> releases.stream()
+                    .filter(release -> release.getReleaseID().equals(av))
+                    .forEach(release -> {
                         releaseAV.add(release);
                         ticketJira.setAffectedVersion(releaseAV);
-                    }
-                }
-            }
+                    }));
         }
     }
 
@@ -151,7 +145,9 @@ public class RetrieveTicketsJira {
      */
     private static void setIV(TicketJira ticketJira) {
         //Inserisco le Injected version solo se affected version è presente
-        if (ticketJira.getAffectedVersion() != null) {
+        if (ticketJira.getAffectedVersion() != null
+                // verifichiamo che AV sia consistente se AV <= OV
+                && (ticketJira.getAffectedVersion().get(0).getNumVersion() < ticketJira.getOpeningVersion().getNumVersion())) {
             ticketJira.setInjectedVersion(ticketJira.getAffectedVersion().get(0));
         }
     }
