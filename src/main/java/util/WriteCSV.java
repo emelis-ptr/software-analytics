@@ -190,15 +190,15 @@ public class WriteCSV {
      *
      * @param tickets: lista dei ticket
      */
-    public static void writeTicket(List<Ticket> tickets) {
+    public static void writeTicket(List<TicketJira> tickets) {
         String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M1) + "/" + MilestoneOne.project(PROJ_NAME_M1) + "-Ticket.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("TicketID;Commit;LastCommit;LastDateCommit");
             fileWriter.append("\n");
 
-            for (Ticket ticket : tickets) {
-                fileWriter.append(ticket.getTicketJira().getIdTicket());
+            for (TicketJira ticket : tickets) {
+                fileWriter.append(ticket.getIdTicket());
                 fileWriter.append(";");
 
                 fileWriter.append(String.valueOf(ticket.getNumCommit()));

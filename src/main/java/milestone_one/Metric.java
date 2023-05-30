@@ -2,7 +2,6 @@ package milestone_one;
 
 import entity.Commit;
 import entity.Dataset;
-import entity.TicketJira;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -41,12 +40,8 @@ public class Metric {
     public static void calculateMetrics(List<Dataset> dataset, Commit commit, DiffEntry entry, DiffFormatter diffFormatter, Integer numRelease) {
         dataset.stream().filter(d -> d.getRelease().getNumVersion().equals(numRelease)).forEach(rowDataset -> {
             if (rowDataset.getFile().getNameFile().equals(entry.getNewPath())) {
-                TicketJira ticketJira = commit.getTicket();
-                if (ticketJira != null && (rowDataset.getFile().isTouched()
-                        && rowDataset.getRelease().getNumVersion().equals(ticketJira.getInjectedVersion().getNumVersion()))) {
-                    rowDataset.setBuggy(true);
-                }
-                determineModifiedFiles(rowDataset, commit, entry);
+                determineModifiedFiles(rowDataset, entry);
+                determineDefectiveClass(rowDataset, commit);
                 calculateLocMetrics(entry, diffFormatter, rowDataset);
                 calculateNumFix(commit, rowDataset);
                 rowDataset.setNumR(rowDataset.getNumR() + 1);
@@ -57,17 +52,38 @@ public class Metric {
     }
 
     /**
+     * Determiniamo le classi defective considerando la IV
+     *
+     * @param rowDataset: row del dataset
+     * @param commit:     commit
+     */
+    private static void determineDefectiveClass(Dataset rowDataset, Commit commit) {
+        if (commit.getTicket() != null) {
+            // si considerano defective tutte le classi con almeno un AV
+            if (commit.getTicket().getAffectedVersion() != null) {
+                commit.getTicket().getAffectedVersion().forEach(av -> {
+                    if (av.getNumVersion().equals(rowDataset.getRelease().getNumVersion())) {
+                        rowDataset.setBuggy(true);
+                    }
+                });
+
+            }
+            // si considerano defective le classi che hanno FV!=IV e IV==Release
+            if (!commit.getTicket().getFixedVersion().equals(commit.getTicket().getInjectedVersion())
+                    && rowDataset.getRelease().getNumVersion().equals(commit.getTicket().getInjectedVersion().getNumVersion())) {
+                rowDataset.setBuggy(true);
+            }
+        }
+    }
+
+    /**
      * Se ci sono delle differenze nell'albero del commit e se il file trovato in precedenza nel dataset
      * è uguale al fine in DiffEntry allora viene settato come true per definire che è buggy
      *
      * @param rowDataset: record del dataset
-     * @param commit:     commit
      * @param entry:      DiffEntry
      */
-    public static void determineModifiedFiles(Dataset rowDataset, Commit commit, DiffEntry entry) {
-        if (commit.getTicket() != null) {
-            rowDataset.getFile().setTouched(true);
-        }
+    public static void determineModifiedFiles(Dataset rowDataset, DiffEntry entry) {
         if ((entry.getChangeType().equals(DiffEntry.ChangeType.MODIFY) || entry.getChangeType().equals(DiffEntry.ChangeType.DELETE)) && entry.getNewPath().endsWith(JAVA_EXT)) {
             rowDataset.getFile().setModified(true);
         }
@@ -182,7 +198,7 @@ public class Metric {
     /**
      * Trova la data di creazione del file
      *
-     * @param rowDataset:      record del dataset
+     * @param rowDataset: record del dataset
      */
     private static void findFileCreation(Dataset rowDataset) {
         String nameFile = rowDataset.getFile().getNameFile();

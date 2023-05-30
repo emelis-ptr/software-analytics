@@ -22,38 +22,19 @@ public class Proportion {
      * @param ticketJiras: lista dei ticket presenti su Jira
      * @param releases:    lista delle release
      */
-    public static void proportion(List<TicketJira> ticketJiras, List<Ticket> tickets, List<Release> releases) {
-        tickets.forEach(ticket -> setFV(ticket, releases));
-
+    public static void proportion(List<TicketJira> ticketJiras, List<Release> releases) {
         ticketJiras.stream()
-                //ordiniamo in base alla data di creazione della FV
-                .sorted(Comparator.comparing(TicketJira::getResolutionDate))
+                .filter(Ticket::isContained)
+                //ordiniamo in base all'ultimo fix del commit che contiene l'id del ticket
+                .sorted(Comparator.comparing(TicketJira::getLastDateCommit))
                 .forEach(ticketJira -> {
-                    if (ticketJira.getFixedVersion() == null) {
-                        RetrieveTicketsJira.setFV(ticketJira, releases);
-                    }
+                    ticketJira.setFV(releases);
                     if (ticketJira.getInjectedVersion() != null) {
                         calculateP(ticketJira);
                     } else {
                         calculateIV(releases, ticketJira);
                     }
                 });
-    }
-
-    /***
-     * Per ogni Ticket inserisce FV se l'ultima data del commit in git è uguale
-     * o avviene dopo la data di release
-     *
-     * @param ticket: ticket
-     * @param releases: lista delle release
-     **/
-    private static void setFV(Ticket ticket, List<Release> releases) {
-        for (Release release : releases) {
-            if (ticket.getLastDateCommit().equals(release.getDateCreation()) || release.getDateCreation().isAfter(ticket.getLastDateCommit())) {
-                ticket.getTicketJira().setFixedVersion(release);
-                break;
-            }
-        }
     }
 
     /**

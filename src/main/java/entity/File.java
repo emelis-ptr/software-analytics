@@ -92,11 +92,14 @@ public class File {
     }
 
     public boolean isTouched() {
+        setTouched();
         return isTouched;
     }
 
-    public void setTouched(boolean touched) {
-        isTouched = touched;
+    private void setTouched() {
+        if (commit.getTicket() != null) {
+            isTouched = commit.getTicket().isContained();
+        }
     }
 
     public boolean isModified() {

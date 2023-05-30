@@ -2,7 +2,6 @@ package milestone_one;
 
 import entity.Commit;
 import entity.Release;
-import entity.Ticket;
 import entity.TicketJira;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -13,33 +12,10 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RetrieveTicketGit {
 
     private RetrieveTicketGit() {
-    }
-
-    /**
-     * Recupera i ticket il cui id risulta essere all'interno di un commit
-     * tramite git
-     *
-     * @param commits: lista dei commits
-     * @return: lista ticket
-     */
-    public static List<Ticket> retrieveTicketGit(List<Commit> commits) {
-        List<Ticket> tickets = new ArrayList<>();
-
-        commits.stream().filter(commit -> commit.getTicket() != null)
-                .collect(Collectors.groupingBy(Commit::getTicket)).forEach((key, value) -> {
-                    Ticket ticket;
-                    ticket = new Ticket(key);
-
-                    value.forEach(ticket::addCommit);
-                    tickets.add(ticket);
-                });
-
-        return tickets;
     }
 
     /**
@@ -75,7 +51,11 @@ public class RetrieveTicketGit {
         for (TicketJira ticketJira : ticketJiras) {
             commits.stream()
                     .filter(commit -> Utils.isContained(commit.getMessage(), ticketJira.getIdTicket()))
-                    .forEach(commit -> commit.setTicket(ticketJira));
+                    .forEach(commit -> {
+                        commit.setTicket(ticketJira);
+                        ticketJira.setContained(true);
+                        ticketJira.addCommit(commit);
+                    });
         }
         // trova la versione associata al commit
         findVersionTicket(commits, releases);

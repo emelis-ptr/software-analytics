@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MilestoneOne {
-    public static final String PROJ_NAME_M1 = String.valueOf(Project.BOOKKEEPER);
+    public static final String PROJ_NAME_M1 = String.valueOf(Project.SYNCOPE);
 
     public static void main(String[] args) {
         Logger.setupLogger();
@@ -26,20 +26,20 @@ public class MilestoneOne {
             int halfRelease = (releases.size() / 2);
 
             Logger.infoLog(" --> Determiniamo i ticket presenti su Jira");
-            List<TicketJira> ticketJiras = RetrieveTicketsJira.retrieveTicketJira();
+            List<TicketJira> ticketJiras = RetrieveTicketsJira.retrieveTicketJira(releases);
 
             Logger.infoLog(" --> Determiniamo i commit del progetto");
             List<Commit> commits = RetrieveTicketGit.getCommits(ticketJiras, releases);
 
             Logger.infoLog(" --> Determiniamo i ticket che sono menzionati nel commit del progetto");
-            List<Ticket> tickets = RetrieveTicketGit.retrieveTicketGit(commits);
-            Logger.infoLog("*** Ticket *** \n" + "Numero di ticket: " + tickets.size() + "\n");
-            Logger.infoLog("Numero di Ticket non presenti su Git: " + (ticketJiras.size() - tickets.size()) + "\n");
+            long ticketOnGit = ticketJiras.stream().filter(Ticket::isContained).count();
+            Logger.infoLog("*** Ticket *** \n" + "Numero di ticket: " + ticketOnGit + "\n");
+            Logger.infoLog("Numero di Ticket non presenti su Git: " + (ticketJiras.size() - ticketOnGit) + "\n");
 
             Logger.infoLog(" --> Determiniamo IV attraverso il metodo proportion");
-            Proportion.proportion(ticketJiras, tickets, releases);
+            Proportion.proportion(ticketJiras, releases);
 
-            Logger.infoLog(" --> Recuperiamo i file dal repository");
+            Logger.infoLog(" --> Recuperiamo i file");
             Map<Release, List<Commit>> mapReleaseCommits = ReleaseCommits.mapReleaseCommits(commits, halfRelease);
             List<Dataset> dataset = BuildDataset.buildDataset(mapReleaseCommits);
             Logger.infoLog("*** Dataset *** \n" + "Dimensione del dataset: " + dataset.size() + "\n");
@@ -47,7 +47,7 @@ public class MilestoneOne {
             Logger.infoLog(" --> Si aggiungono le release mancanti al dataset");
             BuildDataset.addFilesToEmptyRelease(mapReleaseCommits, releases, dataset, halfRelease);
 
-            Logger.infoLog(" --> Si trovano i file che sono stati toccati da un ticket e calcolo delle metriche");
+            Logger.infoLog(" --> Calcolo delle metriche");
             BuildDataset.findClassTouched(dataset, mapReleaseCommits);
 
             Logger.infoLog(" --> Stampiamo su un file csv");

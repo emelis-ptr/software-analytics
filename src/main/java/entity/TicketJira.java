@@ -1,9 +1,10 @@
 package entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-public class TicketJira {
+public class TicketJira extends Ticket{
     private String idTicket;
     private LocalDate creationDate;
     private LocalDate resolutionDate;
@@ -13,9 +14,11 @@ public class TicketJira {
     private List<Release> affectedVersion;
 
     public TicketJira(String idTicket, LocalDate creationDate, LocalDate resolutionDate) {
+        super();
         this.idTicket = idTicket;
         this.creationDate = creationDate;
         this.resolutionDate = resolutionDate;
+        this.affectedVersion = new ArrayList<>();
     }
 
     public String getIdTicket() {
@@ -74,9 +77,41 @@ public class TicketJira {
         this.affectedVersion = affectedVersion;
     }
 
+    public void addAffectedVersion(Release av){
+        if (!this.affectedVersion.contains(av)){
+            this.affectedVersion.add(av);
+        }
+    }
+
+    /***
+     * Per ogni Ticket inserisce FV se l'ultima data del commit in git è uguale
+     * o avviene dopo la data di release.
+     * Per ogni Ticket inserisce FV se non trova il commit associato tramite resolutionDate
+     *
+     * @param releases: lista delle release
+     **/
+    public void setFV(List<Release> releases) {
+        for (Release release : releases) {
+            if (getLastDateCommit().equals(release.getDateCreation()) || release.getDateCreation().isAfter(getLastDateCommit())) {
+                setFixedVersion(release);
+                break;
+            }
+        }
+        if (getFixedVersion() == null) {
+            for (Release release : releases) {
+                if (getResolutionDate().equals(release.getDateCreation()) || release.getDateCreation().isAfter(getResolutionDate())) {
+                    setFixedVersion(release);
+                    break;
+                } else {
+                    setFixedVersion(releases.get(releases.size() - 1));
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
-        return "Version{" +
+        return "TicketJira{" +
                 "idTicket='" + idTicket + '\'' +
                 ", creationDate=" + creationDate +
                 ", resolutionDate=" + resolutionDate +

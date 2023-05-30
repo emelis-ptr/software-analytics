@@ -32,6 +32,7 @@ public class MilestoneTwo {
      */
     private static void evaluate(int totalReleases) {
         for (int i = 2; i < totalReleases + 1; i++) {
+            Logger.infoLog("Current release: " + i + "/" + totalReleases);
             try {
                 Instances[] instances = TrainingAndTestingSet.getTestingTraining(i);
                 WalkForward.runWalkFarward(instances, i);

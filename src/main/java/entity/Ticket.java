@@ -8,23 +8,14 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Ticket {
-    private TicketJira ticketJira;
     private List<Commit> commitList;
     private Commit lastCommit;
     private LocalDate lastDateCommit;
     private int numCommit;
+    private boolean contained; // se ha il ticket nel commit
 
-    public Ticket(TicketJira ticketJira) {
-        this.ticketJira = ticketJira;
+    public Ticket() {
         this.commitList = new ArrayList<>();
-    }
-
-    public TicketJira getTicketJira() {
-        return ticketJira;
-    }
-
-    public void setTicketJira(TicketJira ticketJira) {
-        this.ticketJira = ticketJira;
     }
 
     public List<Commit> getCommitList() {
@@ -82,14 +73,22 @@ public class Ticket {
         }
     }
 
+    public boolean isContained() {
+        return contained;
+    }
+
+    public void setContained(boolean contained) {
+        this.contained = contained;
+    }
+
     @Override
     public String toString() {
-        return "\n" + "Ticket{" +
-                "idTicket=" + ticketJira +
-                ", commitList=" + commitList +
+        return "Ticket{" +
+                "commitList=" + commitList +
                 ", lastCommit=" + lastCommit +
                 ", lastDateCommit=" + lastDateCommit +
                 ", numCommit=" + numCommit +
-                '}' + "\n";
+                ", contained=" + contained +
+                '}';
     }
 }
