@@ -1,9 +1,10 @@
 package entity;
 
-import enums.Balancing;
+import enums.Balance;
 import enums.Classifier;
-import enums.FeatureSelection;
-import enums.CostSensitive;
+import enums.Sensitive;
+import enums.FS;
+import util.Logger;
 import weka.classifiers.Evaluation;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -12,9 +13,9 @@ public class Result {
     private String projName;
     private int numTrainingRelease;
     private Classifier classifierName;
-    private Balancing resamplingMethodName;
-    private FeatureSelection featureSelectionName;
-    private CostSensitive costSensitivity;
+    private Balance resamplingMethodName;
+    private FS featureSelectionName;
+    private Sensitive costSensitivity;
     private double tp;
     private double fp;
     private double tn;
@@ -29,9 +30,9 @@ public class Result {
 
     public Result(String classifierName, String featureSelectionName, String resamplingMethodName, String costSensitivity) {
         this.classifierName = Classifier.valueOf(classifierName);
-        this.featureSelectionName = FeatureSelection.valueOf(featureSelectionName);
-        this.resamplingMethodName = Balancing.valueOf(resamplingMethodName);
-        this.costSensitivity = CostSensitive.valueOf(costSensitivity);
+        this.featureSelectionName = FS.valueOf(featureSelectionName);
+        this.resamplingMethodName = Balance.valueOf(resamplingMethodName);
+        this.costSensitivity = Sensitive.valueOf(costSensitivity);
     }
 
     public String getProjName() {
@@ -58,27 +59,27 @@ public class Result {
         this.classifierName = classifierName;
     }
 
-    public Balancing getResamplingMethodName() {
+    public Balance getResamplingMethodName() {
         return resamplingMethodName;
     }
 
-    public void setResamplingMethodName(Balancing resamplingMethodName) {
+    public void setResamplingMethodName(Balance resamplingMethodName) {
         this.resamplingMethodName = resamplingMethodName;
     }
 
-    public FeatureSelection getFeatureSelectionName() {
+    public FS getFeatureSelectionName() {
         return featureSelectionName;
     }
 
-    public void setFeatureSelectionName(FeatureSelection featureSelectionName) {
-        this.featureSelectionName = featureSelectionName;
+    public void setFeatureSelectionName(FS fsName) {
+        this.featureSelectionName = fsName;
     }
 
-    public CostSensitive getCostSensitivity() {
+    public Sensitive getCostSensitivity() {
         return costSensitivity;
     }
 
-    public void setCostSensitivity(CostSensitive costSensitivity) {
+    public void setCostSensitivity(Sensitive costSensitivity) {
         this.costSensitivity = costSensitivity;
     }
 
@@ -229,6 +230,8 @@ public class Result {
             this.auc = eval.areaUnderROC(classIndex);
             this.kappa = eval.kappa();
         }
+
+        Logger.infoLog("precision" + this.getPrecision());
     }
 
     @Override

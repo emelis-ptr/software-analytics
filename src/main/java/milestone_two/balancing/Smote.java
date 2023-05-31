@@ -1,31 +1,33 @@
 package milestone_two.balancing;
 
 import util.Logger;
+import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instances;
 import weka.filters.supervised.instance.SMOTE;
 
-public class Smote {
+import static enums.Balance.SMOTE;
 
-    private Smote() {
+public class Smote extends Balancing {
+
+    public Smote(Instances training, Instances testing) {
+        super(training, testing);
+        this.nameBalancing = SMOTE;
+        smote();
     }
-    
+
     /**
      * SMOTE
      *
-     * @param training:
-     * @return:
      */
-    public static SMOTE smote(Instances training) {
-        SMOTE smote = null;
-
+    public void smote() {
+        this.filterClassifier = new FilteredClassifier();
         try {
-            smote = new SMOTE();
-            smote.setInputFormat(training);
+            SMOTE smote = new SMOTE();
+            smote.setInputFormat(this.getTraining());
+            this.filterClassifier.setFilter(smote);
         } catch (Exception e) {
             Logger.errorLog("Errore SMOTE");
             System.exit(1);
         }
-
-        return smote;
     }
 }

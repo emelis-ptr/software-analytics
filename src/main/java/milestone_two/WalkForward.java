@@ -1,270 +1,234 @@
 package milestone_two;
 
 import entity.Result;
-import enums.Balancing;
+import enums.Balance;
 import enums.Classifier;
-import enums.CostSensitive;
-import enums.FeatureSelection;
+import enums.FS;
+import enums.Sensitive;
 import milestone_one.MilestoneOne;
-import milestone_two.balancing.Oversampling;
-import milestone_two.balancing.Smote;
-import milestone_two.balancing.Undersampling;
+import milestone_two.balancing.*;
+import milestone_two.classification.Classification;
+import milestone_two.cost_sensitive.NoSensitivity;
+import milestone_two.cost_sensitive.SensitiveLearning;
+import milestone_two.cost_sensitive.SensitiveThreshold;
+import milestone_two.cost_sensitive.Sensitivity;
 import milestone_two.feature_selection.BestFirst;
+import milestone_two.feature_selection.FeatureSelection;
+import milestone_two.feature_selection.NoSelection;
 import util.Logger;
-import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.CostSensitiveClassifier;
 import weka.classifiers.meta.FilteredClassifier;
-import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
-import weka.filters.Filter;
-import weka.filters.supervised.instance.Resample;
-import weka.filters.supervised.instance.SMOTE;
-import weka.filters.supervised.instance.SpreadSubsample;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static milestone_two.MilestoneTwo.PROJ_NAME_M2;
 
 public class WalkForward {
 
-    private WalkForward() {
+    private Balancing balancing;
+    private Sensitivity sensitivity;
+    private FeatureSelection featureSel;
+    private Classification classification;
+    private final List<Result> results;
+    private final int indexRelease;
+
+    public WalkForward(List<Result> results, int indexRelease) {
+        this.results = results;
+        this.indexRelease = indexRelease;
     }
 
-    protected static final ArrayList<Result> results = new ArrayList<>();
 
     /**
      * Walk Forward
      *
-     * @param instances:    instanze del training e testing set
-     * @param indexRelease: indice della release
+     * @param instances: instanze del training e testing set
      */
-    public static void runWalkFarward(Instances[] instances, int indexRelease) {
+    public void runWalkFarward(Instances[] instances) {
         Instances trainingSet = instances[0];
         Instances testingSet = instances[1];
+        //Feature Selection
+        chooseFeatureSelection(trainingSet, testingSet);
+    }
 
-        //Scelta del classificatore
-        AbstractClassifier classifier = null;
-
-        String[] models = new String[4];
+    /**
+     * Classifier
+     */
+    private void chooseClassifier() {
+        Classification classifier = new Classification(featureSel.getTraining(), featureSel.getTesting(), balancing.getFilterClassifier());
         for (Classifier classifierName : Classifier.values()) {
-            models[0] = String.valueOf(classifierName);
-
             switch (classifierName) {
-                case RANDOM_FOREST -> //Random Forest
-                        classifier = new RandomForest();
-                case IBK -> //IBk
-                        classifier = new IBk();
-                case NAIVE_BAYES -> //Naive Bayes
-                        classifier = new NaiveBayes();
+                case RANDOM_FOREST -> {//Random Forest
+                    classifier.randomForest();
+                    this.setClassification(classifier);
+                }
+                case IBK -> {//IBk
+                    classifier.ibk();
+                    this.setClassification(classifier);
+                }
+                case NAIVE_BAYES -> {//Naive Bayes
+                    classifier.naiveBayesr();
+                    this.setClassification(classifier);
+                }
                 default -> {
                     Logger.errorLog("Errore nella selezione del classifier");
                     System.exit(1);
                 }
             }
-            chooseFeatureSelection(models, classifier, trainingSet, testingSet, indexRelease);
+            chooseSensitive(classifier);
         }
     }
 
     /**
      * Feature Selection
      *
-     * @param classifier:   AstractClassifier
-     * @param trainingSet:  training set
-     * @param testingSet:   testing set
-     * @param indexRelease: indice della release
+     * @param trainingSet: training set
+     * @param testingSet:  testing set
      */
-    private static void chooseFeatureSelection(String[] models, AbstractClassifier classifier, Instances trainingSet, Instances testingSet, int indexRelease) {
+    private void chooseFeatureSelection(Instances trainingSet, Instances testingSet) {
 
-        for (FeatureSelection featureSelectionName : FeatureSelection.values()) {
-            models[1] = String.valueOf(featureSelectionName);
-
-            Filter filter;
-            switch (featureSelectionName) {
-                case NO_SELECTION -> { //No selection
-                    //setta la feature da predire
-                    trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
-                    testingSet.setClassIndex(trainingSet.numAttributes() - 1);
+        for (FS FSName : FS.values()) {
+            FeatureSelection featureSelection;
+            switch (FSName) {
+                case NO_SELECTION -> {//No selection
+                    //feature da predire
+                    featureSelection = new NoSelection(trainingSet, testingSet);
+                    this.setFeatureSel(featureSelection);
                 }
-                case BEST_FIRST -> { //Best First
-                    filter = BestFirst.fsWithBestFirst(trainingSet);
-                    try {
-                        trainingSet = Filter.useFilter(trainingSet, filter);
-                        testingSet = Filter.useFilter(testingSet, filter);
-
-                        trainingSet.setClassIndex(trainingSet.numAttributes() - 1);
-                        testingSet.setClassIndex(trainingSet.numAttributes() - 1);
-
-                    } catch (Exception e1) {
-                        Logger.errorLog("Errore nella feature selection BestFirst");
-                    }
+                case BEST_FIRST -> {//Best First
+                    featureSelection = new BestFirst(trainingSet, testingSet);
+                    this.setFeatureSel(featureSelection);
                 }
                 default -> {
                     Logger.errorLog("Errore nella selezione della feature selection");
                     System.exit(1);
                 }
             }
-            chooseBalancing(models, classifier, trainingSet, testingSet, indexRelease);
+            chooseBalancing();
         }
     }
 
     /**
      * Balancing
-     *
-     * @param classifier:   AbstractClassifier
-     * @param trainingSet:  training set
-     * @param testingSet:   testing set
-     * @param indexRelease: numero delle release
      */
-    private static void chooseBalancing(String[] models, AbstractClassifier classifier, Instances trainingSet, Instances testingSet, int indexRelease) {
+    private void chooseBalancing() {
 
-        for (Balancing resamplingMethodName : Balancing.values()) {
-            models[2] = String.valueOf(resamplingMethodName);
+        Balancing balance;
+        for (Balance resamplingMethodName : Balance.values()) {
 
-            FilteredClassifier filteredClassifier = null;
             switch (resamplingMethodName) {
-                case NO_RESAMPLING: //No resampling
-                    break;
-
-                case OVERSAMPLING: //Oversampling
-                    Resample resample = Oversampling.oversampling(trainingSet);
-
-                    filteredClassifier = new FilteredClassifier();
-                    filteredClassifier.setClassifier(classifier);
-                    filteredClassifier.setFilter(resample);
-
-                    try {
-                        trainingSet = Filter.useFilter(trainingSet, resample);
-                    } catch (Exception e1) {
-                        Logger.errorLog("Errore nell'applicazione di Oversampling");
-                    }
-                    break;
-
-                case UNDERSAMPLING: //Undersampling
-                    SpreadSubsample spreadSubsample = Undersampling.undersampling(trainingSet);
-
-                    filteredClassifier = new FilteredClassifier();
-                    filteredClassifier.setClassifier(classifier);
-                    filteredClassifier.setFilter(spreadSubsample);
-
-                    try {
-                        trainingSet = Filter.useFilter(trainingSet, spreadSubsample);
-                    } catch (Exception e1) {
-                        Logger.errorLog("Errore nell'applicazione di Undersampling");
-                    }
-                    break;
-
-                case SMOTE: //SMOTE
-                    SMOTE smote = Smote.smote(trainingSet);
-
-                    filteredClassifier = new FilteredClassifier();
-                    filteredClassifier.setClassifier(classifier);
-                    filteredClassifier.setFilter(smote);
-
-                    try {
-                        trainingSet = Filter.useFilter(trainingSet, smote);
-                    } catch (Exception e1) {
-                        Logger.errorLog("Errore nell'applicazione di SMOTE");
-                    }
-                    break;
-
-                default: //No sampling
-                    break;
+                case NO_RESAMPLING -> { //No resampling
+                    balance = new NoBalancing(featureSel.getTraining(), featureSel.getTesting());
+                    this.setBalancing(balance);
+                }
+                case OVERSAMPLING -> { //Oversampling
+                    balance = new Oversampling(featureSel.getTraining(), featureSel.getTesting());
+                    this.setBalancing(balance);
+                }
+                case UNDERSAMPLING -> { //Undersampling
+                    balance = new Undersampling(featureSel.getTraining(), featureSel.getTesting());
+                    this.setBalancing(balance);
+                }
+                case SMOTE -> { //SMOTE
+                    balance = new Smote(featureSel.getTraining(), featureSel.getTesting());
+                    this.setBalancing(balance);
+                }
             }
-            chooseSensitive(models, classifier, filteredClassifier, trainingSet, testingSet, indexRelease);
+            chooseClassifier();
         }
     }
 
     /**
      * CostSensitive
      *
-     * @param classifier:         AbstractClassifier
-     * @param filteredClassifier: FilteredClassifier
-     * @param trainingSet:        training set
-     * @param testingSet:         testing set
-     * @param indexRelease:       indice della release
+     * @param classifier: classifier
      */
-    private static void chooseSensitive(String[] models, AbstractClassifier classifier, FilteredClassifier filteredClassifier, Instances trainingSet, Instances testingSet, int indexRelease) {
+    private void chooseSensitive(Classification classifier) {
 
-        for (CostSensitive costSensitive : CostSensitive.values()) {
-            models[3] = costSensitive.toString();
-
-            CostSensitiveClassifier costSensitiveClassifier = null;
-            switch (costSensitive) {
-                case NO_SENSITIVE: //No sensitive
-                    break;
-
-                case SENSITIVE_THRESHOLD:
-                    costSensitiveClassifier = new CostSensitiveClassifier();
-
-                    if (filteredClassifier == null) {
-                        costSensitiveClassifier.setClassifier(classifier);
-                    } else {
-                        costSensitiveClassifier.setClassifier(filteredClassifier);
-                    }
-                    costSensitiveClassifier.setMinimizeExpectedCost(true);
-                    costSensitiveClassifier.setCostMatrix(milestone_two.cost_sensitive.CostSensitive.createCostMatrix(1.0, 10.0));
-
-                    break;
-
-                case SENSITIVE_LEARNING:
-                    costSensitiveClassifier = new CostSensitiveClassifier();
-
-                    if (filteredClassifier == null) {
-                        costSensitiveClassifier.setClassifier(classifier);
-                    } else {
-                        costSensitiveClassifier.setClassifier(filteredClassifier);
-                    }
-                    costSensitiveClassifier.setMinimizeExpectedCost(false);
-                    costSensitiveClassifier.setCostMatrix(milestone_two.cost_sensitive.CostSensitive.createCostMatrix(1.0, 10.0));
-
-                    break;
-
-                default:
-                    break;
+        for (Sensitive sensitive : Sensitive.values()) {
+            Instances training = classifier.getTraining();
+            FilteredClassifier filteredClassifier = classifier.getFilteredClassifier();
+            Sensitivity sen;
+            switch (sensitive) {
+                case NO_SENSITIVE -> { //No sensitive
+                    sen = new NoSensitivity(filteredClassifier, training);
+                    this.setSensitivity(sen);
+                }
+                case SENSITIVE_THRESHOLD -> {
+                    sen = new SensitiveThreshold(filteredClassifier, training);
+                    this.setSensitivity(sen);
+                }
+                case SENSITIVE_LEARNING -> {
+                    sen = new SensitiveLearning(filteredClassifier, training);
+                    this.setSensitivity(sen);
+                }
             }
-            evaluation(models, classifier, filteredClassifier, costSensitiveClassifier, trainingSet, testingSet, indexRelease);
+            evaluation();
         }
     }
 
     /**
      * Applica i classificatori e calcola i valori
-     *
-     * @param classifier:  AbstractClassifier
-     * @param trainingSet: training set
-     * @param testingSet:  testing set
      */
-    private static void evaluation(String[] models, AbstractClassifier classifier, FilteredClassifier filteredClassifier, CostSensitiveClassifier costSensitiveClassifier, Instances trainingSet, Instances testingSet, int indexRelease) {
-        Result result = new Result(models[0], models[1], models[2], models[3]);
+    private void evaluation() {
+        Result result = new Result(this.getClassification().getClassifierName().name(),
+                this.getFeatureSel().getNameFeatureSelection().name(),
+                this.getBalancing().getNameBalancing().name(),
+                this.getSensitivity().getSensitivityName().name());
         result.setProjName(MilestoneOne.project(PROJ_NAME_M2));
 
+        CostSensitiveClassifier costSensitiveClassifier = sensitivity.getCostSensitiveClassifier();
+        Instances training = classification.getTraining();
+        Instances testing = classification.getTesting();
         try {
-            Evaluation eval = new Evaluation(testingSet);
-            if (costSensitiveClassifier == null) {
-                if (filteredClassifier == null) {
-                    classifier.buildClassifier(trainingSet);
-                    eval.evaluateModel(classifier, testingSet);
-                } else {
-                    filteredClassifier.buildClassifier(trainingSet);
-                    eval.evaluateModel(filteredClassifier, testingSet);
-                }
-            } else {
-                costSensitiveClassifier.buildClassifier(trainingSet);
-                eval.evaluateModel(costSensitiveClassifier, testingSet);
-            }
+            Evaluation eval = new Evaluation(testing, costSensitiveClassifier.getCostMatrix());
+            eval.evaluateModel(costSensitiveClassifier, testing);
             result.addValues(eval);
-
-            Logger.infoLog(models[0] + " - " + models[1] + " - " + models[2] + " - " + models[3] + "\n" +
-                    "Error rate = " + eval.errorRate() + "\n" +
-                    "Root mean squared error = " + eval.rootMeanSquaredError() + "\n");
         } catch (
                 Exception e) {
             Logger.errorLog("Error evaluation");
         }
-        result.addPercentageBuggyness(trainingSet, testingSet, indexRelease);
+        result.addPercentageBuggyness(training, testing, indexRelease);
         results.add(result);
+        Logger.infoLog("" + result);
     }
+
+    public Balancing getBalancing() {
+        return balancing;
+    }
+
+    public void setBalancing(Balancing balancing) {
+        this.balancing = balancing;
+    }
+
+    public Sensitivity getSensitivity() {
+        return sensitivity;
+    }
+
+    public void setSensitivity(Sensitivity sensitivity) {
+        this.sensitivity = sensitivity;
+    }
+
+    public FeatureSelection getFeatureSel() {
+        return featureSel;
+    }
+
+    public void setFeatureSel(FeatureSelection featureSel) {
+        this.featureSel = featureSel;
+    }
+
+    public Classification getClassification() {
+        return classification;
+    }
+
+    public void setClassification(Classification classification) {
+        this.classification = classification;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
 
 }

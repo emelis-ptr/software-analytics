@@ -7,13 +7,21 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 
-public class BestFirst {
+import static enums.FS.BEST_FIRST;
 
-    private BestFirst() {
+public class BestFirst extends FeatureSelection {
+
+    public BestFirst(Instances trainingSet, Instances testingSet) {
+        super(trainingSet, testingSet);
+        this.nameFeatureSelection = BEST_FIRST;
+        fsWithBestFirst();
     }
 
-    public static Filter fsWithBestFirst(Instances trainingSet) {
+    public void fsWithBestFirst() {
         AttributeSelection featureSelection = new AttributeSelection();
+        Instances trainingFiltered;
+        Instances testingFiltered;
+
         try {
 
             CfsSubsetEval cfsSubsetEval = new CfsSubsetEval();
@@ -26,11 +34,20 @@ public class BestFirst {
             featureSelection.setSearch(greedyStepwise);
 
             //si specifica il dataset da usare
-            featureSelection.setInputFormat(trainingSet);
+            featureSelection.setInputFormat(training);
+
+            trainingFiltered = Filter.useFilter(training, featureSelection);
+            testingFiltered = Filter.useFilter(testing, featureSelection);
+
+            int numAttrFiltered = trainingFiltered.numAttributes();
+            trainingFiltered.setClassIndex(numAttrFiltered - 1);
+            testingFiltered.setClassIndex(numAttrFiltered - 1);
+
+            this.training = trainingFiltered;
+            this.testing = testingFiltered;
         } catch (Exception e) {
             Logger.errorLog("Errore nella feature selection con Best First");
         }
-        return featureSelection;
     }
 
 }

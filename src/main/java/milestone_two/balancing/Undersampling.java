@@ -1,35 +1,36 @@
 package milestone_two.balancing;
 
 import util.Logger;
+import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instances;
 import weka.filters.supervised.instance.SpreadSubsample;
 
-public class Undersampling {
+import static enums.Balance.UNDERSAMPLING;
 
-    private Undersampling() {
+public class Undersampling extends Balancing{
+
+    public Undersampling(Instances training, Instances testing) {
+        super(training, testing);
+        this.nameBalancing = UNDERSAMPLING;
+        undersampling();
     }
 
     /**
      * Undersampling
      *
-     * @param training:
-     * @return:
      */
-    public static SpreadSubsample undersampling(Instances training) {
-
-        SpreadSubsample spreadSubsample = null;
+    public void undersampling() {
+        this.filterClassifier = new FilteredClassifier();
         String[] opts = new String[]{"-M", "1.0"};
         try {
-            spreadSubsample = new SpreadSubsample();
-            spreadSubsample.setInputFormat(training);
+            SpreadSubsample spreadSubsample = new SpreadSubsample();
+            spreadSubsample.setInputFormat(this.getTraining());
             spreadSubsample.setOptions(opts);
+            this.filterClassifier.setFilter(spreadSubsample);
         } catch (Exception e) {
             Logger.errorLog("Errore Undersampling");
             System.exit(1);
         }
-
-        return spreadSubsample;
-
     }
 
 }

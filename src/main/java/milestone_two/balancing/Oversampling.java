@@ -2,25 +2,29 @@ package milestone_two.balancing;
 
 import milestone_two.TrainingAndTestingSet;
 import util.Logger;
+import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instances;
 import weka.filters.supervised.instance.Resample;
 
-public class Oversampling {
+import static enums.Balance.OVERSAMPLING;
 
-    private Oversampling() {
+public class Oversampling extends Balancing {
+
+    public Oversampling(Instances training, Instances testing) {
+        super(training, testing);
+        this.nameBalancing = OVERSAMPLING;
+        oversampling();
     }
 
     /**
      * Oversampling
-     *
-     * @param training:
-     * @return:
      */
-    public static Resample oversampling(Instances training) {
+    public void oversampling() {
         int trainingSize = training.numInstances();
-        Resample resample = null;
+        this.filterClassifier = new FilteredClassifier();
+
         try {
-            resample = new Resample();
+            Resample resample = new Resample();
             resample.setInputFormat(training);
 
             //mi calcolo la percentuale della classe minoritaria
@@ -39,11 +43,10 @@ public class Oversampling {
             String[] opts = new String[]{"-B", "1.0", "-Z", String.valueOf(doublePercentageMajorityClass)};
             resample.setOptions(opts);
             resample.setNoReplacement(false);
+            this.filterClassifier.setFilter(resample);
         } catch (Exception e) {
             Logger.errorLog("Errore Oversampling");
             System.exit(1);
         }
-
-        return resample;
     }
 }
