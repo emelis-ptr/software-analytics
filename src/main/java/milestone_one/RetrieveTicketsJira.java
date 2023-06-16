@@ -126,6 +126,7 @@ public class RetrieveTicketsJira {
     private static void setIV(TicketJira ticketJira) {
         // verifichiamo che AV sia disponibile
         if (!ticketJira.getAffectedVersion().isEmpty()
+                && ticketJira.getOpeningVersion() != null
                 // verifichiamo che AV sia consistente se AV <= OV
                 && (ticketJira.getAffectedVersion().get(0).getNumVersion() <= ticketJira.getOpeningVersion().getNumVersion())) {
             ticketJira.setInjectedVersion(ticketJira.getAffectedVersion().get(0));

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MilestoneOne {
-    public static final String PROJ_NAME_M1 = String.valueOf(Project.SYNCOPE);
+    public static final String PROJ_NAME_M1 = String.valueOf(Project.BOOKKEEPER);
 
     public static void main(String[] args) {
         Logger.setupLogger();
