@@ -41,6 +41,9 @@ public class TrainingAndTestingSet {
                 testSet.add(i);
             }
         }
+        // elimino l'attributo associata alla release
+        trainingSet.deleteAttributeAt(0);
+        testSet.deleteAttributeAt(0);
         instances[0] = trainingSet;
         instances[1] = testSet;
         return instances;
