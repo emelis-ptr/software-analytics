@@ -1,34 +1,17 @@
 package milestone_two.balancing;
 
 import enums.Balance;
+import util.InstancesA;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instances;
 
-public abstract class Balancing {
+public abstract class Balancing extends InstancesA {
 
-    protected Instances training;
-    protected Instances testing;
     protected FilteredClassifier filterClassifier;
     protected Balance nameBalancing;
 
     protected Balancing(Instances training, Instances testing) {
         this.training = training;
-        this.testing = testing;
-    }
-
-    public Instances getTraining() {
-        return training;
-    }
-
-    public void setTraining(Instances training) {
-        this.training = training;
-    }
-
-    public Instances getTesting() {
-        return testing;
-    }
-
-    public void setTesting(Instances testing) {
         this.testing = testing;
     }
 

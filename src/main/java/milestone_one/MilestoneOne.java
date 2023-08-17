@@ -32,7 +32,7 @@ public class MilestoneOne {
             List<Commit> commits = RetrieveTicketGit.getCommits(ticketJiras, releases);
 
             Logger.infoLog(" --> Determiniamo i ticket che sono menzionati nel commit del progetto");
-            long ticketOnGit = ticketJiras.stream().filter(Ticket::isContained).count();
+            long ticketOnGit = ticketJiras.stream().filter(Ticket::isContainedInACommit).count();
             Logger.infoLog("*** Ticket *** \n" + "Numero di ticket: " + ticketOnGit + "\n");
             Logger.infoLog("Numero di Ticket non presenti su Git: " + (ticketJiras.size() - ticketOnGit) + "\n");
 

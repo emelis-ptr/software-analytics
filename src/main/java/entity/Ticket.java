@@ -12,7 +12,7 @@ public class Ticket {
     private Commit lastCommit;
     private LocalDate lastDateCommit;
     private int numCommit;
-    private boolean contained; // se ha il ticket nel commit
+    private boolean containedInACommit; // se ha il ticket nel commit
 
     public Ticket() {
         this.commitList = new ArrayList<>();
@@ -73,12 +73,12 @@ public class Ticket {
         }
     }
 
-    public boolean isContained() {
-        return contained;
+    public boolean isContainedInACommit() {
+        return containedInACommit;
     }
 
-    public void setContained(boolean contained) {
-        this.contained = contained;
+    public void setContainedInACommit(boolean contained) {
+        this.containedInACommit = contained;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class Ticket {
                 ", lastCommit=" + lastCommit +
                 ", lastDateCommit=" + lastDateCommit +
                 ", numCommit=" + numCommit +
-                ", contained=" + contained +
+                ", contained=" + containedInACommit +
                 '}';
     }
 }

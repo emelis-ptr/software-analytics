@@ -98,7 +98,7 @@ public class File {
 
     private void setTouched() {
         if (commit.getTicket() != null) {
-            isTouched = commit.getTicket().isContained();
+            isTouched = commit.getTicket().isContainedInACommit();
         }
     }
 

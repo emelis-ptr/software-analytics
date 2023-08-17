@@ -24,7 +24,7 @@ public class Proportion {
      */
     public static void proportion(List<TicketJira> ticketJiras, List<Release> releases) {
         ticketJiras.stream()
-                .filter(Ticket::isContained)
+                .filter(Ticket::isContainedInACommit)
                 //ordiniamo in base all'ultimo fix del commit che contiene l'id del ticket
                 .sorted(Comparator.comparing(TicketJira::getLastDateCommit))
                 .forEach(ticketJira -> {

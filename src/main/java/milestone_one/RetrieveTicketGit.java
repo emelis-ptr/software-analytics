@@ -53,7 +53,7 @@ public class RetrieveTicketGit {
                     .filter(commit -> Utils.isContained(commit.getMessage(), ticketJira.getIdTicket()))
                     .forEach(commit -> {
                         commit.setTicket(ticketJira);
-                        ticketJira.setContained(true);
+                        ticketJira.setContainedInACommit(true);
                         ticketJira.addCommit(commit);
                     });
         }
