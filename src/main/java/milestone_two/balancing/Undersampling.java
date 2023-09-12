@@ -1,6 +1,6 @@
 package milestone_two.balancing;
 
-import util.Logger;
+import util.MyLogger;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instances;
 import weka.filters.supervised.instance.SpreadSubsample;
@@ -28,7 +28,7 @@ public class Undersampling extends Balancing{
             spreadSubsample.setOptions(opts);
             this.filterClassifier.setFilter(spreadSubsample);
         } catch (Exception e) {
-            Logger.errorLog("Errore Undersampling");
+            MyLogger.errorLog("Errore Undersampling");
             System.exit(1);
         }
     }

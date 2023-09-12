@@ -5,7 +5,6 @@ import enums.Balance;
 import enums.Classifier;
 import enums.FS;
 import enums.Sensitive;
-import milestone_one.MilestoneOne;
 import milestone_two.balancing.*;
 import milestone_two.classification.Classification;
 import milestone_two.cost_sensitive.NoSensitivity;
@@ -15,7 +14,7 @@ import milestone_two.cost_sensitive.Sensitivity;
 import milestone_two.feature_selection.BestFirst;
 import milestone_two.feature_selection.FeatureSelection;
 import milestone_two.feature_selection.NoSelection;
-import util.Logger;
+import util.MyLogger;
 import weka.classifiers.Evaluation;
 import weka.classifiers.meta.CostSensitiveClassifier;
 import weka.classifiers.meta.FilteredClassifier;
@@ -24,6 +23,7 @@ import weka.core.Instances;
 import java.util.List;
 
 import static milestone_two.MilestoneTwo.PROJ_NAME_M2;
+import static util.Utils.project;
 
 public class WalkForward {
 
@@ -72,7 +72,7 @@ public class WalkForward {
                     this.setClassification(classifier);
                 }
                 default -> {
-                    Logger.errorLog("Errore nella selezione del classifier");
+                    MyLogger.errorLog("Errore nella selezione del classifier");
                     System.exit(1);
                 }
             }
@@ -101,7 +101,7 @@ public class WalkForward {
                     this.setFeatureSel(featureSelection);
                 }
                 default -> {
-                    Logger.errorLog("Errore nella selezione della feature selection");
+                    MyLogger.errorLog("Errore nella selezione della feature selection");
                     System.exit(1);
                 }
             }
@@ -176,7 +176,7 @@ public class WalkForward {
                 this.getFeatureSel().getNameFeatureSelection().name(),
                 this.getBalancing().getNameBalancing().name(),
                 this.getSensitivity().getSensitivityName().name());
-        result.setProjName(MilestoneOne.project(PROJ_NAME_M2));
+        result.setProjName(project(PROJ_NAME_M2));
 
         CostSensitiveClassifier costSensitiveClassifier = sensitivity.getCostSensitiveClassifier();
         Instances training = classification.getTraining();
@@ -187,11 +187,11 @@ public class WalkForward {
             result.addValues(eval);
         } catch (
                 Exception e) {
-            Logger.errorLog("Error evaluation");
+            MyLogger.errorLog("Error evaluation");
         }
         result.addPercentageBuggyness(training, testing, indexRelease);
         results.add(result);
-        Logger.infoLog("" + result);
+        MyLogger.infoLog("" + result);
     }
 
     public Balancing getBalancing() {

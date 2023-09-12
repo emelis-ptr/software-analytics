@@ -1,6 +1,6 @@
 package milestone_two.cost_sensitive;
 
-import util.Logger;
+import util.MyLogger;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instances;
 
@@ -21,7 +21,7 @@ public class NoSensitivity extends Sensitivity {
         try {
             costSensitiveClassifier.buildClassifier(training);
         } catch (Exception e) {
-            Logger.infoLog("Errore No Sensitive");
+            MyLogger.infoLog("Errore No Sensitive");
         }
     }
 }

@@ -10,7 +10,7 @@ import org.eclipse.jgit.diff.Edit;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import util.GitHandler;
-import util.Logger;
+import util.MyLogger;
 import util.Utils;
 
 import java.io.ByteArrayOutputStream;
@@ -37,7 +37,7 @@ public class Metric {
      * @param diffFormatter: DiffFormatter
      * @param numRelease:    release corrente
      */
-    public static void calculateMetrics(List<Dataset> dataset, Commit commit, DiffEntry entry, DiffFormatter diffFormatter, Integer numRelease) {
+    public static void calculateMetrics(List<Dataset> dataset, Commit commit, DiffEntry entry, DiffFormatter diffFormatter, Integer numRelease, String proj) {
         dataset.stream().filter(d -> d.getRelease().getNumVersion().equals(numRelease)).forEach(rowDataset -> {
             if (rowDataset.getFile().getNameFile().equals(entry.getNewPath())) {
                 determineModifiedFiles(rowDataset, entry);
@@ -46,7 +46,7 @@ public class Metric {
                 calculateNumFix(commit, rowDataset);
                 rowDataset.setNumR(rowDataset.getNumR() + 1);
                 rowDataset.addAuthors(commit.getAuthor());
-                findFileCreation(rowDataset);
+                findFileCreation(rowDataset, proj);
             }
         });
     }
@@ -131,7 +131,7 @@ public class Metric {
                 churnList.add(churnOnce);
             }
         } catch (IOException e) {
-            Logger.errorLog("Errore calcolo LOC");
+            MyLogger.errorLog("Errore calcolo LOC");
         }
 
         //LOC
@@ -159,10 +159,10 @@ public class Metric {
      *                  AbstractTreeIterator in parallelo
      * @return : numero di LOC di un file
      */
-    public static int calculateSize(TreeWalk treeWalk) {
+    public static int calculateSize(TreeWalk treeWalk, String proj) {
 
         int lines = 0;
-        try (Git git = GitHandler.git()) {
+        try (Git git = GitHandler.git(proj)) {
             ObjectLoader loader = git.getRepository().open(treeWalk.getObjectId(0));
             ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -177,7 +177,7 @@ public class Metric {
                 token.nextToken();
             }
         } catch (IOException e) {
-            Logger.errorLog("Errore nel calcolo della dimensione LOC del file");
+            MyLogger.errorLog("Errore nel calcolo della dimensione LOC del file");
         }
 
         return lines;
@@ -200,18 +200,18 @@ public class Metric {
      *
      * @param rowDataset: record del dataset
      */
-    private static void findFileCreation(Dataset rowDataset) {
+    private static void findFileCreation(Dataset rowDataset, String proj) {
         String nameFile = rowDataset.getFile().getNameFile();
         List<Date> commitsDate = new ArrayList<>();
         try {
             if (!mapCreationDate.containsKey(nameFile)) {
-                GitHandler.git().log()
+                GitHandler.git(proj).log()
                         .addPath(nameFile).call()
                         .forEach(revCommit -> commitsDate.add(revCommit.getCommitterIdent().getWhen()));
                 mapCreationDate.put(nameFile, commitsDate);
             }
         } catch (GitAPIException | IOException e) {
-            Logger.errorLog("Errore in Git per recuperare il primo commit del file");
+            MyLogger.errorLog("Errore in Git per recuperare il primo commit del file");
         }
 
         mapCreationDate.forEach((key, value) -> value.sort(Comparator.comparing(Date::getTime)));

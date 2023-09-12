@@ -11,7 +11,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.util.io.NullOutputStream;
 import util.GitHandler;
-import util.Logger;
+import util.MyLogger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static milestone_one.MilestoneOne.PROJ_NAME_M1;
 import static util.Constants.JAVA_EXT;
+import static util.Utils.path;
+import static util.Utils.project;
 
 public class BuildDataset {
 
@@ -31,9 +34,9 @@ public class BuildDataset {
      *
      * @return: dataset
      */
-    public static List<Dataset> buildDataset(Map<Release, List<Commit>> mapReleaseCommits) {
+    public static List<Dataset> buildDataset(Map<Release, List<Commit>> mapReleaseCommits, String proj) {
         List<Dataset> dataset = new ArrayList<>();
-        TreeWalk treeWalk = GitHandler.treeWalk();
+        TreeWalk treeWalk = GitHandler.treeWalk(proj);
 
         mapReleaseCommits.forEach((k, v) -> {
             File file;
@@ -47,7 +50,7 @@ public class BuildDataset {
                     if (treeWalk.getPathString().endsWith(JAVA_EXT)) {
                         String nameFile = treeWalk.getPathString();
                         file = new File(nameFile, k);
-                        file.setSizeLOC(Metric.calculateSize(treeWalk));
+                        file.setSizeLOC(Metric.calculateSize(treeWalk, proj));
                         file.setCommit(commit);
 
                         dataset.add(new Dataset(file));
@@ -55,7 +58,7 @@ public class BuildDataset {
                     }
                 }
             } catch (IOException e) {
-                Logger.errorLog("Errore nell'albero del commit");
+                MyLogger.errorLog("Errore nell'albero del commit");
             }
         });
         return dataset;
@@ -68,10 +71,10 @@ public class BuildDataset {
      * @param dataset:           dataset
      * @throws IOException:
      */
-    public static void findClassTouched(List<Dataset> dataset, Map<Release, List<Commit>> mapReleaseCommits) throws IOException {
+    public static void findClassTouched(List<Dataset> dataset, Map<Release, List<Commit>> mapReleaseCommits, String proj) throws IOException {
         //diffFormatter trova le differenze da i tree di due commit (ovvero tra i file)
         DiffFormatter diffFormatter = new DiffFormatter(NullOutputStream.INSTANCE);
-        diffFormatter.setRepository(GitHandler.repository(MilestoneOne.path()));
+        diffFormatter.setRepository(GitHandler.repository(path(project(PROJ_NAME_M1))));
         diffFormatter.setDetectRenames(true);
 
         mapReleaseCommits.forEach((key, value1) -> value1.forEach(commit -> {
@@ -82,10 +85,10 @@ public class BuildDataset {
                 //diffFormatter restituisce una lista dei path dei file che sono differenti tra i due commit
                 try {
                     for (DiffEntry entry : diffFormatter.scan(previousCommit, revCommit)) {
-                        Metric.calculateMetrics(dataset, commit, entry, diffFormatter, key.getNumVersion());
+                        Metric.calculateMetrics(dataset, commit, entry, diffFormatter, key.getNumVersion(), proj);
                     }
                 } catch (IOException e) {
-                    Logger.errorLog("Errore in DiffFormatter");
+                    MyLogger.errorLog("Errore in DiffFormatter");
                 }
             }
         }));

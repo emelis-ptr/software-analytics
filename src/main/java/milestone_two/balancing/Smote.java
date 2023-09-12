@@ -1,6 +1,6 @@
 package milestone_two.balancing;
 
-import util.Logger;
+import util.MyLogger;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instances;
 import weka.filters.supervised.instance.SMOTE;
@@ -26,7 +26,7 @@ public class Smote extends Balancing {
             smote.setInputFormat(this.getTraining());
             this.filterClassifier.setFilter(smote);
         } catch (Exception e) {
-            Logger.errorLog("Errore SMOTE");
+            MyLogger.errorLog("Errore SMOTE");
             System.exit(1);
         }
     }

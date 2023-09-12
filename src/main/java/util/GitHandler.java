@@ -1,6 +1,5 @@
 package util;
 
-import milestone_one.MilestoneOne;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
@@ -15,11 +14,39 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import static util.Constants.BRANCH;
 import static util.Constants.PATH_REPOSITORY;
+import static util.Utils.path;
 
 public class GitHandler {
 
     private GitHandler() {
+    }
+
+    /**
+     * Clone repository
+     *
+     * @param folder: cartella del repository in locale
+     * @param proj:    nome del progetto GitHub
+     */
+    public static void cloneRemote(File folder, String proj) {
+        String path = folder + File.separator + proj.toLowerCase();
+        File dirProj = new File(path);
+        if (!dirProj.exists()) {
+            try {
+                Git.cloneRepository()
+                        .setURI("https://github.com/apache/" + proj.toLowerCase())
+                        .setDirectory(dirProj)
+                        .setBranch(BRANCH)
+                        .call()
+                        .close();
+            } catch (GitAPIException e) {
+                MyLogger.errorLog("Impossibile clonare il repository");
+            }
+            MyLogger.infoLog("Il repository clonato");
+        } else {
+            MyLogger.infoLog("Il repository in locale è stato già clonato");
+        }
     }
 
     /**
@@ -34,7 +61,7 @@ public class GitHandler {
         try (FileInputStream fileInput = new FileInputStream(PATH_REPOSITORY)) {
             properties.load(fileInput);
         } catch (Exception e) {
-            Logger.errorLog("Errore nel file path repository.");
+            MyLogger.errorLog("Errore nel file path repository.");
         }
         return properties.getProperty(path);
     }
@@ -70,8 +97,8 @@ public class GitHandler {
      * @throws GitAPIException:
      * @return:
      */
-    public static Iterable<RevCommit> logsCommits() throws IOException, GitAPIException {
-        Repository repository = GitHandler.repository(MilestoneOne.path());
+    public static Iterable<RevCommit> logsCommits(String proj) throws IOException, GitAPIException {
+        Repository repository = GitHandler.repository(path(proj));
         Git git = new Git(repository);
         return git.log().call();
     }
@@ -82,8 +109,8 @@ public class GitHandler {
      * @throws IOException:
      * @return: git
      */
-    public static Git git() throws IOException {
-        Path repoPath = GitHandler.returnPath(MilestoneOne.path());
+    public static Git git(String proj) throws IOException {
+        Path repoPath = GitHandler.returnPath(path(proj));
         return Git.open(repoPath.toFile());
     }
 
@@ -92,12 +119,12 @@ public class GitHandler {
      *
      * @return: tree walk
      */
-    public static TreeWalk treeWalk() {
+    public static TreeWalk treeWalk(String proj) {
         TreeWalk treeWalk = null;
-        try (Git git = git()) {
+        try (Git git = git(proj)) {
             treeWalk = new TreeWalk(git.getRepository());
         } catch (IOException e) {
-            Logger.errorLog("Errore nel recupero file");
+            MyLogger.errorLog("Errore nel recupero file");
         }
         return treeWalk;
     }

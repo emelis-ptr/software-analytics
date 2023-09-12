@@ -25,10 +25,10 @@ public class RetrieveTicketGit {
      * @throws IOException:
      * @return: lista dei commit
      */
-    public static List<Commit> getCommits(List<TicketJira> ticketJiras, List<Release> releases) throws GitAPIException, IOException {
+    public static List<Commit> getCommits(List<TicketJira> ticketJiras, List<Release> releases, String proj) throws GitAPIException, IOException {
         List<Commit> commits = new ArrayList<>();
 
-        Iterable<RevCommit> logs = GitHandler.logsCommits();
+        Iterable<RevCommit> logs = GitHandler.logsCommits(proj);
 
         // aggiunge alla lista tutti i commit con le sue informazioni
         for (RevCommit rev : logs) {

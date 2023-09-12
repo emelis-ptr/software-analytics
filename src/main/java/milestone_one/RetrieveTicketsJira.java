@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static milestone_one.MilestoneOne.PROJ_NAME_M1;
 import static util.Constants.*;
 
 
@@ -32,7 +31,7 @@ public class RetrieveTicketsJira {
      * @throws IOException:
      * @throws ParseException:
      */
-    public static List<TicketJira> retrieveTicketJira(List<Release> releases) throws IOException, ParseException {
+    public static List<TicketJira> retrieveTicketJira(List<Release> releases, String projName) throws IOException, ParseException {
         ArrayList<TicketJira> ticketJiras = new ArrayList<>();
         TicketJira ticketJira;
 
@@ -43,7 +42,7 @@ public class RetrieveTicketsJira {
         do {
             //Only gets a max of 1000 at a time, so must do this multiple times if bugs >1000
             j = i + 1000;
-            String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22" + MilestoneOne.project(PROJ_NAME_M1) + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR" + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt=" + i + "&maxResults=" + j;
+            String url = "https://issues.apache.org/jira/rest/api/2/search?jql=project=%22" + projName + "%22AND%22issueType%22=%22Bug%22AND(%22status%22=%22closed%22OR" + "%22status%22=%22resolved%22)AND%22resolution%22=%22fixed%22&fields=key,resolutiondate,versions,created&startAt=" + i + "&maxResults=" + j;
 
             JSONObject json = JsonUtils.readJsonFromUrl(url);
 

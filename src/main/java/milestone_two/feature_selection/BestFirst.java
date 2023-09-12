@@ -1,6 +1,6 @@
 package milestone_two.feature_selection;
 
-import util.Logger;
+import util.MyLogger;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.GreedyStepwise;
 import weka.core.Instances;
@@ -46,7 +46,7 @@ public class BestFirst extends FeatureSelection {
             this.training = trainingFiltered;
             this.testing = testingFiltered;
         } catch (Exception e) {
-            Logger.errorLog("Errore nella feature selection con Best First");
+            MyLogger.errorLog("Errore nella feature selection con Best First");
         }
     }
 

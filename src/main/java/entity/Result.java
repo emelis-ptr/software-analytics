@@ -4,7 +4,7 @@ import enums.Balance;
 import enums.Classifier;
 import enums.Sensitive;
 import enums.FS;
-import util.Logger;
+import util.MyLogger;
 import weka.classifiers.Evaluation;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -231,7 +231,7 @@ public class Result {
             this.kappa = eval.kappa();
         }
 
-        Logger.infoLog("precision" + this.getPrecision());
+        MyLogger.infoLog("precision" + this.getPrecision());
     }
 
     @Override

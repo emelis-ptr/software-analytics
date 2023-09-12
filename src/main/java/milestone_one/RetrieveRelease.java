@@ -4,7 +4,6 @@ import entity.Release;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import util.JsonUtils;
-import util.WriteCSV;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -13,8 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import static milestone_one.MilestoneOne.PROJ_NAME_M1;
 import static util.Constants.*;
+import static util.Utils.project;
 
 public class RetrieveRelease {
 
@@ -27,11 +26,11 @@ public class RetrieveRelease {
      * @return : lista delle release
      * @throws IOException:
      */
-    public static List<Release> retrieveRelease() throws IOException {
+    public static List<Release> retrieveRelease(String projName) throws IOException {
         ArrayList<Release> releases = new ArrayList<>();
         //Fills the arraylist with releases dates and orders them
         //Ignores releases with missing dates
-        String url = "https://issues.apache.org/jira/rest/api/2/project/" + MilestoneOne.project(PROJ_NAME_M1).toUpperCase(Locale.ROOT);
+        String url = "https://issues.apache.org/jira/rest/api/2/project/" + project(projName).toUpperCase(Locale.ROOT);
         JSONObject json;
 
         json = JsonUtils.readJsonFromUrl(url);
@@ -54,7 +53,6 @@ public class RetrieveRelease {
         releases.sort(Comparator.comparing(Release::getDateCreation));
         setNumRelease(releases);
 
-        WriteCSV.writeRelease(releases);
         return releases;
     }
 

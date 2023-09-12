@@ -1,7 +1,7 @@
 package milestone_two.balancing;
 
 import milestone_two.TrainingAndTestingSet;
-import util.Logger;
+import util.MyLogger;
 import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Instances;
 import weka.filters.supervised.instance.Resample;
@@ -45,7 +45,7 @@ public class Oversampling extends Balancing {
             resample.setNoReplacement(false);
             this.filterClassifier.setFilter(resample);
         } catch (Exception e) {
-            Logger.errorLog("Errore Oversampling");
+            MyLogger.errorLog("Errore Oversampling");
             System.exit(1);
         }
     }

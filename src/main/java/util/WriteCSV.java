@@ -1,7 +1,6 @@
 package util;
 
 import entity.*;
-import milestone_one.MilestoneOne;
 
 import java.io.FileWriter;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.List;
 import static milestone_one.MilestoneOne.PROJ_NAME_M1;
 import static milestone_two.MilestoneTwo.PROJ_NAME_M2;
 import static util.Constants.PATH_RESULTS;
+import static util.Utils.project;
 
 public class WriteCSV {
 
@@ -21,7 +21,7 @@ public class WriteCSV {
      * @param releases: lista delle release
      */
     public static void writeRelease(List<Release> releases) {
-        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M1) + "/" + MilestoneOne.project(PROJ_NAME_M1) + "-Release.csv";
+        String outname = PATH_RESULTS + project(PROJ_NAME_M1) + "/" + project(PROJ_NAME_M1) + "-Release.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("Index;Version ID;Version Name;Date Creation");
@@ -38,7 +38,7 @@ public class WriteCSV {
                 fileWriter.append("\n");
             }
         } catch (Exception e) {
-            Logger.errorLog("Error in csv writer ReleaseInfo");
+            MyLogger.errorLog("Error in csv writer ReleaseInfo");
         }
     }
 
@@ -48,7 +48,7 @@ public class WriteCSV {
      * @param ticketJiras: lista dei ticket presenti su Jira
      */
     public static void writeTicketJira(List<TicketJira> ticketJiras) {
-        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M1) + "/" + MilestoneOne.project(PROJ_NAME_M1) + "-TicketJira.csv";
+        String outname = PATH_RESULTS + project(PROJ_NAME_M1) + "/" + project(PROJ_NAME_M1) + "-TicketJira.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("Tickets ID; Date Creation; Resolution Date; Injected Version; Opening Version; Fixed Version; Affected Version");
@@ -81,7 +81,7 @@ public class WriteCSV {
                 fileWriter.append("\n");
             }
         } catch (Exception e) {
-            Logger.errorLog("Error in csv writer TicketJira");
+            MyLogger.errorLog("Error in csv writer TicketJira");
         }
     }
 
@@ -91,7 +91,7 @@ public class WriteCSV {
      * @param dataset: metriche del dataset
      */
     public static void writeDataset(List<Dataset> dataset) {
-        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M1) + "/" + MilestoneOne.project(PROJ_NAME_M1) + "-Dataset.csv";
+        String outname = PATH_RESULTS + project(PROJ_NAME_M1) + "/" + project(PROJ_NAME_M1) + "-Dataset.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("Release,FileName,sizeLoc,locTouched,numR,numFix,numAuth,locAdded,avgLocAdded,maxLocAdded," +
@@ -137,7 +137,7 @@ public class WriteCSV {
                 fileWriter.append("\n");
             }
         } catch (Exception e) {
-            Logger.errorLog("Error in csv writer Dataset");
+            MyLogger.errorLog("Error in csv writer Dataset");
         }
     }
 
@@ -147,7 +147,7 @@ public class WriteCSV {
      * @param commits: lista dei commit
      */
     public static void writeCommit(List<Commit> commits) {
-        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M1) + "/" + MilestoneOne.project(PROJ_NAME_M1) + "-Commit.csv";
+        String outname = PATH_RESULTS + project(PROJ_NAME_M1) + "/" + project(PROJ_NAME_M1) + "-Commit.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("ShadID;Commit;Message;Ticket;Date;Authors;Version;Files");
@@ -181,7 +181,7 @@ public class WriteCSV {
                 fileWriter.append("\n");
             }
         } catch (Exception e) {
-            Logger.errorLog("Error in csv writer Commit");
+            MyLogger.errorLog("Error in csv writer Commit");
         }
     }
 
@@ -191,7 +191,7 @@ public class WriteCSV {
      * @param tickets: lista dei ticket
      */
     public static void writeTicket(List<TicketJira> tickets) {
-        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M1) + "/" + MilestoneOne.project(PROJ_NAME_M1) + "-Ticket.csv";
+        String outname = PATH_RESULTS + project(PROJ_NAME_M1) + "/" + project(PROJ_NAME_M1) + "-Ticket.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("TicketID;Commit;LastCommit;LastDateCommit");
@@ -209,7 +209,7 @@ public class WriteCSV {
                 fileWriter.append("\n");
             }
         } catch (Exception e) {
-            Logger.errorLog("Error in csv writer Ticket");
+            MyLogger.errorLog("Error in csv writer Ticket");
         }
     }
 
@@ -219,7 +219,7 @@ public class WriteCSV {
      * @param files: lista dei file
      */
     public static void writeFile(List<File> files) {
-        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M1) + "/" + MilestoneOne.project(PROJ_NAME_M1) + "-Files.csv";
+        String outname = PATH_RESULTS + project(PROJ_NAME_M1) + "/" + project(PROJ_NAME_M1) + "-Files.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("File name;OldNameFile;Release;Commit;SizeLOC;Age;isRenamed");
@@ -258,12 +258,12 @@ public class WriteCSV {
                 fileWriter.append("\n");
             }
         } catch (Exception e) {
-            Logger.errorLog("Error in csv writer File");
+            MyLogger.errorLog("Error in csv writer File");
         }
     }
 
     public static void writeEvaluation(List<Result> info) {
-        String outname = PATH_RESULTS + MilestoneOne.project(PROJ_NAME_M2) + "/" + MilestoneOne.project(PROJ_NAME_M2) + "-Evaluation.csv";
+        String outname = PATH_RESULTS + project(PROJ_NAME_M2) + "/" + project(PROJ_NAME_M2) + "-Evaluation.csv";
 
         try (FileWriter fileWriter = new FileWriter(outname)) {
             fileWriter.append("Dataset,#TrainingRelease,%Training,%Defective_training,%Defective_testing,Classifier,Balancing," +
@@ -306,9 +306,9 @@ public class WriteCSV {
                 fileWriter.append(String.valueOf(result.getKappa()));
                 fileWriter.append("\n");
             }
-            Logger.infoLog("File " + PROJ_NAME_M2 + "-Evaluation.csv completato");
+            MyLogger.infoLog("File " + PROJ_NAME_M2 + "-Evaluation.csv completato");
         } catch (Exception e) {
-            Logger.errorLog("Error in csv writer " + PROJ_NAME_M2 + "-Evaluation.csv");
+            MyLogger.errorLog("Error in csv writer " + PROJ_NAME_M2 + "-Evaluation.csv");
         }
     }
 

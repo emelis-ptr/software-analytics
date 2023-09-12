@@ -1,7 +1,7 @@
 package milestone_two.classification;
 
 import enums.Classifier;
-import util.Logger;
+import util.MyLogger;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.FilteredClassifier;
@@ -34,7 +34,7 @@ public class Classification {
             filteredClassifier.buildClassifier(training);
             this.setClassifierName(IBK);
         } catch (Exception e) {
-            Logger.errorLog("Errore" + IBK);
+            MyLogger.errorLog("Errore" + IBK);
         }
     }
 
@@ -48,7 +48,7 @@ public class Classification {
             filteredClassifier.buildClassifier(training);
             this.setClassifierName(NAIVE_BAYES);
         } catch (Exception e) {
-            Logger.errorLog("Errore " + NAIVE_BAYES);
+            MyLogger.errorLog("Errore " + NAIVE_BAYES);
         }
     }
 
@@ -62,7 +62,7 @@ public class Classification {
             filteredClassifier.buildClassifier(training);
             this.setClassifierName(RANDOM_FOREST);
         } catch (Exception e) {
-            Logger.errorLog("Errore " + RANDOM_FOREST);
+            MyLogger.errorLog("Errore " + RANDOM_FOREST);
         }
     }
 
